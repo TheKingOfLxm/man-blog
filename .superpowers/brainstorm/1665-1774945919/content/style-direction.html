@@ -1,0 +1,52 @@
+<h2>你更喜欢哪种设计风格？</h2>
+<p class="subtitle">这将决定整体视觉基调，点击选择你倾向的方向</p>
+
+<div class="cards">
+  <div class="card" data-choice="minimal" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%); padding: 30px; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div style="font-family: Georgia, serif; color: #fff; font-size: 28px; margin-bottom: 10px; letter-spacing: 2px;">DEVELOPER</div>
+      <div style="width: 40px; height: 1px; background: #666; margin: 10px 0;"></div>
+      <div style="color: #888; font-size: 12px; letter-spacing: 4px;">BLOG & PORTFOLIO</div>
+    </div>
+    <div class="card-body">
+      <h3>A. 极简暗黑</h3>
+      <p>深色背景 + 大量留白 + 衬线标题字体。克制、高级、开发者气质。类似 Josh W. Comeau 的风格。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="modern" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div style="font-family: system-ui, sans-serif; color: #fff; font-size: 26px; font-weight: 700; margin-bottom: 8px;">Hello World ✨</div>
+      <div style="color: rgba(255,255,255,0.8); font-size: 14px;">前端开发者 · 创造有趣的交互</div>
+    </div>
+    <div class="card-body">
+      <h3>B. 现代活力</h3>
+      <p>渐变色 + 圆角卡片 + 活泼的微交互。年轻、有活力、有设计感。适合展示你的前端技能和创意。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="clean" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #ffffff; border: 1px solid #e5e5e5; padding: 30px; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div style="font-family: -apple-system, sans-serif; color: #111; font-size: 24px; font-weight: 600; margin-bottom: 8px;">探索 · 记录 · 分享</div>
+      <div style="color: #666; font-size: 13px;">大四学生 · 前端开发爱好者</div>
+    </div>
+    <div class="card-body">
+      <h3>C. 清爽明亮</h3>
+      <p>白色底 + 清晰排版 + 适度配色点缀。干净、易读、专业但不沉闷。类似阮一峰博客的简洁感。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tech" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(180deg, #0d1117 0%, #161b22 100%); padding: 20px; min-height: 180px; display: flex; flex-direction: column; justify-content: center;">
+      <div style="font-family: 'Courier New', monospace; color: #58a6ff; font-size: 14px; margin-bottom: 6px;"><span style="color:#8b949e;">const</span> <span style="color:#d2a8ff;">developer</span> = {</div>
+      <div style="font-family: 'Courier New', monospace; color: #58a6ff; font-size: 14px; margin-left: 20px; margin-bottom: 4px;">name: <span style="color:#a5d6ff;">"你的名字"</span>,</div>
+      <div style="font-family: 'Courier New', monospace; color: #58a6ff; font-size: 14px; margin-left: 20px; margin-bottom: 4px;">focus: <span style="color:#a5d6ff;">"前端开发"</span>,</div>
+      <div style="font-family: 'Courier New', monospace; color: #58a6ff; font-size: 14px; margin-left: 20px; margin-bottom: 4px;">passion: <span style="color:#79c0ff;">true</span></div>
+      <div style="font-family: 'Courier New', monospace; color: #58a6ff; font-size: 14px;">};</div>
+    </div>
+    <div class="card-body">
+      <h3>D. 代码主题</h3>
+      <p>类似 VS Code / GitHub 风格的深色主题。代码高亮配色、等宽字体点缀。极客范儿，直接展示你的程序员身份。</p>
+    </div>
+  </div>
+</div>

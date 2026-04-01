@@ -1,0 +1,47 @@
+[
+  {
+    "id": "vue3-reactive-principle",
+    "title": "深入理解 Vue 3 响应式原理",
+    "summary": "从 Proxy 到 effect，一步步揭开 Vue 3 响应式系统的面纱。看完这篇，computed 和 watch 的行为你就能解释清楚了。",
+    "content": "posts/vue3-reactive-principle.md",
+    "category": "Vue",
+    "date": "2026-03-20",
+    "tags": ["Vue 3", "响应式", "Proxy"]
+  },
+  {
+    "id": "pinia-state-management",
+    "title": "Pinia 状态管理实战总结",
+    "summary": "从 Vuex 迁移到 Pinia 的真实体验，包括模块化设计、持久化方案、以及几个容易踩的坑。",
+    "content": "posts/pinia-state-management.md",
+    "category": "Vue",
+    "date": "2026-03-08",
+    "tags": ["Vue 3", "Pinia", "状态管理"]
+  },
+  {
+    "id": "css-animation-tips",
+    "title": "CSS 动画性能优化：从卡顿到丝滑",
+    "summary": "为什么有些动画 60fps 有些只有 30fps？记录我优化页面动画性能的过程，涉及 GPU 加速、will-change、composite layer 等。",
+    "content": "posts/css-animation-tips.md",
+    "category": "CSS",
+    "date": "2026-02-25",
+    "tags": ["CSS", "动画", "性能优化"]
+  },
+  {
+    "id": "vite-config-guide",
+    "title": "Vite 配置指南：从默认到定制",
+    "summary": "整理了一份 Vite 常用配置清单，包括路径别名、代理、环境变量、构建优化等实际开发中频繁用到的配置项。",
+    "content": "posts/vite-config-guide.md",
+    "category": "工程化",
+    "date": "2026-02-12",
+    "tags": ["Vite", "工程化", "构建工具"]
+  },
+  {
+    "id": "frontend-journey",
+    "title": "从零开始学前端：我的两年回顾",
+    "summary": "大二在中南民大第一次写 HTML 到现在，完整回顾我的前端学习路线、踩过的坑、以及给学弟学妹的建议。",
+    "content": "posts/frontend-journey.md",
+    "category": "随笔",
+    "date": "2026-01-30",
+    "tags": ["学习路线", "总结", "成长"]
+  }
+]

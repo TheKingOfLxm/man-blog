@@ -1,0 +1,35 @@
+[
+  {
+    "id": "personal-blog",
+    "title": "个人博客网站",
+    "description": "你正在看的这个网站！基于 Vue 3 + Vite + TypeScript 搭建的毛玻璃风格个人博客，支持暗色模式和 Markdown 文章渲染。",
+    "image": "/images/projects/blog.jpg",
+    "tags": ["Vue 3", "TypeScript", "Vite", "Pinia"],
+    "demo": "https://thekingoflxm.github.io/blog",
+    "source": "https://github.com/TheKingOfLxm/blog"
+  },
+  {
+    "id": "todo-app",
+    "title": "待办事项应用",
+    "description": "Vue 3 + Pinia 实现的全功能待办应用，支持拖拽排序、分类筛选、本地持久化存储，是学习 Vue 3 时写的第一个完整项目。",
+    "image": "/images/projects/todo.jpg",
+    "tags": ["Vue 3", "Pinia", "CSS3"],
+    "source": "https://github.com/TheKingOfLxm/todo-app"
+  },
+  {
+    "id": "weather-app",
+    "title": "天气查询应用",
+    "description": "调用高德天气 API，实现城市搜索、实时天气展示和未来三天预报。练习了异步请求和组件通信。",
+    "image": "/images/projects/weather.jpg",
+    "tags": ["Vue 3", "Axios", "API"],
+    "source": "https://github.com/TheKingOfLxm/weather-app"
+  },
+  {
+    "id": "markdown-editor",
+    "title": "Markdown 编辑器",
+    "description": "支持实时预览和代码高亮的在线 Markdown 编辑器，纯前端实现，深入理解了 contenteditable 和字符串解析。",
+    "image": "/images/projects/editor.jpg",
+    "tags": ["JavaScript", "Markdown", "CSS"],
+    "source": "https://github.com/TheKingOfLxm/markdown-editor"
+  }
+]

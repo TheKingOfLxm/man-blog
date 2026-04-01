@@ -1,0 +1,56 @@
+:root {
+  /* 亮色模式 */
+  --bg-primary: #e8faf0;
+  --bg-secondary: #d4f5e3;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-hover: rgba(255, 255, 255, 0.85);
+  --bg-nav: rgba(255, 255, 255, 0.6);
+
+  --color-primary: #5ec696;
+  --color-primary-hover: #3db37a;
+  --color-primary-light: rgba(94, 198, 150, 0.12);
+
+  --text-heading: #2d7a50;
+  --text-body: #5a9a78;
+  --text-muted: #8fbfa3;
+  --text-white: #fff;
+
+  --border-color: rgba(94, 198, 150, 0.15);
+  --shadow-color: rgba(94, 198, 150, 0.1);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --blur-amount: 12px;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  --max-width: 1200px;
+  --nav-height: 64px;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #0f1f17;
+  --bg-secondary: #142a1e;
+  --bg-card: rgba(30, 60, 45, 0.6);
+  --bg-card-hover: rgba(30, 60, 45, 0.8);
+  --bg-nav: rgba(15, 31, 23, 0.7);
+
+  --color-primary: #6edbaa;
+  --color-primary-hover: #5ec696;
+  --color-primary-light: rgba(110, 219, 170, 0.12);
+
+  --text-heading: #e0f7e9;
+  --text-body: #a8d5ba;
+  --text-muted: #6a9a80;
+
+  --border-color: rgba(110, 219, 170, 0.15);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}

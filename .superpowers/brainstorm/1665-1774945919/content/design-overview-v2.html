@@ -1,0 +1,90 @@
+<h2>设计方案总览 · 浅色调</h2>
+<p class="subtitle">薄荷清新 · 更淡更轻盈</p>
+
+<div class="section">
+  <div class="label">技术栈</div>
+  <p>Vue 3 (Composition API) + Vite + Vue Router + Pinia + TypeScript</p>
+</div>
+
+<div class="section" style="background: linear-gradient(135deg, #e0f7e9 0%, #d4f5e3 50%, #c8f0db 100%); border-radius: 16px; padding: 24px; margin: 16px 0;">
+  <h3 style="color: #2d7a50; margin-bottom: 16px;">页面结构与导航</h3>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+    <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.8); text-align: center;">
+      <div style="font-size: 24px; margin-bottom: 8px;">🏠</div>
+      <div style="color: #2d7a50; font-weight: 600; font-size: 14px;">首页 Hero</div>
+      <div style="color: #5a9a78; font-size: 11px; margin-top: 4px;">头像 · 一句话介绍<br/>技能标签 · CTA按钮</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.8); text-align: center;">
+      <div style="font-size: 24px; margin-bottom: 8px;">📝</div>
+      <div style="color: #2d7a50; font-weight: 600; font-size: 14px;">技术博客</div>
+      <div style="color: #5a9a78; font-size: 11px; margin-top: 4px;">文章列表 · 分类筛选<br/>文章详情(Markdown)</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.8); text-align: center;">
+      <div style="font-size: 24px; margin-bottom: 8px;">🎨</div>
+      <div style="color: #2d7a50; font-weight: 600; font-size: 14px;">作品集</div>
+      <div style="color: #5a9a78; font-size: 11px; margin-top: 4px;">项目卡片 · 截图预览<br/>技术栈标签 · 链接</div>
+    </div>
+    <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.8); text-align: center;">
+      <div style="font-size: 24px; margin-bottom: 8px;">👤</div>
+      <div style="color: #2d7a50; font-weight: 600; font-size: 14px;">关于我</div>
+      <div style="color: #5a9a78; font-size: 11px; margin-top: 4px;">个人经历 · 技能图表<br/>学习时间线 · 联系方式</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>配色预览</h3>
+  <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; border-radius: 12px; background: #e8faf0; border: 1px solid #d0f0dd;"></div>
+      <div style="font-size: 10px; color: #666; margin-top: 4px;">背景</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; border-radius: 12px; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.9);"></div>
+      <div style="font-size: 10px; color: #666; margin-top: 4px;">卡片</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; border-radius: 12px; background: #5ec696;"></div>
+      <div style="font-size: 10px; color: #666; margin-top: 4px;">主色</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; border-radius: 12px; background: #3db37a;"></div>
+      <div style="font-size: 10px; color: #666; margin-top: 4px;">强调</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; border-radius: 12px; background: #2d7a50;"></div>
+      <div style="font-size: 10px; color: #666; margin-top: 4px;">标题</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 60px; height: 60px; border-radius: 12px; background: #5a9a78;"></div>
+      <div style="font-size: 10px; color: #666; margin-top: 4px;">正文</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>设计特色</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+    <div style="background: rgba(94,198,150,0.08); border: 1px solid rgba(94,198,150,0.15); border-radius: 12px; padding: 16px;">
+      <strong>✦ 毛玻璃卡片</strong>
+      <p style="color: #666; font-size: 13px; margin-top: 4px;">白色半透明卡片 + 薄荷渐变底层，轻盈通透</p>
+    </div>
+    <div style="background: rgba(94,198,150,0.08); border: 1px solid rgba(94,198,150,0.15); border-radius: 12px; padding: 16px;">
+      <strong>✦ 滚动动画</strong>
+      <p style="color: #666; font-size: 13px; margin-top: 4px;">Intersection Observer 驱动的渐入动画</p>
+    </div>
+    <div style="background: rgba(94,198,150,0.08); border: 1px solid rgba(94,198,150,0.15); border-radius: 12px; padding: 16px;">
+      <strong>✦ 暗色模式</strong>
+      <p style="color: #666; font-size: 13px; margin-top: 4px;">一键切换，暗色下薄荷绿更亮更突出</p>
+    </div>
+    <div style="background: rgba(94,198,150,0.08); border: 1px solid rgba(94,198,150,0.15); border-radius: 12px; padding: 16px;">
+      <strong>✦ 响应式</strong>
+      <p style="color: #666; font-size: 13px; margin-top: 4px;">移动端自适应，汉堡菜单，卡片单列</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>数据方案</h3>
+  <p>博客文章和项目数据用本地 JSON 文件存储，Markdown 渲染用 markdown-it。纯静态，可部署到 GitHub Pages / Vercel。</p>
+</div>

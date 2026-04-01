@@ -1,0 +1,66 @@
+<h2>再来一批风格方向</h2>
+<p class="subtitle">完全不同的四个方向，看看有没有心动的</p>
+
+<div class="cards">
+  <div class="card" data-choice="glass" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 50%, #a6c1ee 100%); padding: 30px; min-height: 180px; display: flex; align-items: center; justify-content: center;">
+      <div style="background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 16px; padding: 24px 36px; border: 1px solid rgba(255,255,255,0.4); text-align: center;">
+        <div style="font-family: system-ui; color: #fff; font-size: 22px; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.1);">Glass Blog</div>
+        <div style="color: rgba(255,255,255,0.85); font-size: 12px; margin-top: 6px;">毛玻璃 · 半透明 · 层次感</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 毛玻璃拟态</h3>
+      <p>半透明卡片 + 背景模糊 + 渐变色底层。轻盈梦幻，有深度和层次感。2024-2025 非常流行的设计趋势。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="bento" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #1a1a1a; padding: 20px; min-height: 180px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px;">
+      <div style="background: #ff6b6b; border-radius: 12px; padding: 12px; grid-row: span 2; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #fff; font-weight: 700; font-size: 13px;">关于我</span>
+      </div>
+      <div style="background: #4ecdc4; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #fff; font-weight: 600; font-size: 12px;">博客</span>
+      </div>
+      <div style="background: #ffe66d; border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center;">
+        <span style="color: #333; font-weight: 600; font-size: 12px;">项目</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 便当盒 Bento Grid</h3>
+      <p>不等大小色块网格排列 + 鲜明色块 + 圆角矩形。类似 Apple 风格的产品页布局，信息密度高但井然有序。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="magazine" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #faf9f6; padding: 20px; min-height: 180px; display: flex; flex-direction: column; justify-content: center;">
+      <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 900; color: #111; line-height: 1.1; letter-spacing: -1px;">THE<br/>FRONTEND<br/>JOURNAL</div>
+      <div style="width: 50px; height: 3px; background: #e74c3c; margin: 12px 0;"></div>
+      <div style="font-family: system-ui; font-size: 11px; color: #999; letter-spacing: 2px; text-transform: uppercase;">Vol. 01 — 前端探索与思考</div>
+    </div>
+    <div class="card-body">
+      <h3>C. 杂志编辑风</h3>
+      <p>衬线大标题 + 强排版对比 + 纸张质感底色。文艺、有品味、像一本精心排版的杂志。强调阅读体验和内容本身。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="terminal" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: #0c0c0c; padding: 20px; min-height: 180px; display: flex; flex-direction: column; justify-content: center;">
+      <div style="display: flex; gap: 6px; margin-bottom: 14px;">
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f57;"></div>
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: #febc2e;"></div>
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: #28c840;"></div>
+      </div>
+      <div style="font-family: 'Courier New', monospace; color: #28c840; font-size: 13px; line-height: 1.8;">
+        <span style="color: #28c840;">➜</span> <span style="color: #5af78e;">~</span> <span style="color: #999;">cd my-blog && npm run dev</span><br/>
+        <span style="color: #999;">🚀 Blog is running at</span> <span style="color: #5af78e; text-decoration: underline;">localhost:3000</span><br/>
+        <span style="color: #999;">📝 Ready to share ideas...</span><span style="color: #28c840; animation: blink 1s infinite;">▊</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D. 终端模拟</h3>
+      <p>模拟命令行界面 + 绿色/琥珀色文字 + 光标闪烁效果。黑客感十足，交互体验独特。导航像输入命令，博客像读日志。</p>
+    </div>
+  </div>
+</div>
