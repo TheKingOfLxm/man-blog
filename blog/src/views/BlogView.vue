@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { useSeo } from '../composables/useSeo'
 import postsData from '../data/posts.json'
 import type { Post } from '../types'
 
@@ -19,6 +20,22 @@ const filteredPosts = computed(() => {
 })
 
 useScrollReveal()
+
+useSeo({
+  title: '技术博客 - 小满的博客',
+  description: '记录前端开发学习路上的思考与实践，涵盖 Vue 3、CSS 动画、Vite 工程化等主题。',
+  type: 'website',
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: '小满的技术博客',
+    description: '记录前端开发学习路上的思考与实践',
+    author: {
+      '@type': 'Person',
+      name: '刘小满'
+    }
+  }
+})
 </script>
 
 <template>
@@ -36,6 +53,7 @@ useScrollReveal()
             :key="cat"
             class="filter-btn"
             :class="{ active: selectedCategory === cat }"
+            :aria-pressed="selectedCategory === cat"
             @click="selectedCategory = cat"
           >
             {{ cat }}
@@ -46,6 +64,7 @@ useScrollReveal()
           class="search-input glass"
           type="text"
           placeholder="搜索文章..."
+          aria-label="搜索文章"
         />
       </div>
 
@@ -69,7 +88,7 @@ useScrollReveal()
         </router-link>
       </div>
 
-      <div v-if="filteredPosts.length === 0" class="empty-state reveal">
+      <div v-if="filteredPosts.length === 0" class="empty-state reveal" role="status">
         <p>没有找到匹配的文章</p>
       </div>
     </div>

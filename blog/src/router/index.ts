@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { nextTick } from 'vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -47,6 +48,13 @@ const router = createRouter({
 
 router.afterEach((to) => {
   document.title = (to.meta.title as string) || '小满的博客'
+  // 路由切换后将焦点移至页面顶部，方便键盘用户
+  nextTick(() => {
+    const main = document.querySelector('#app')
+    if (main) {
+      (main as HTMLElement).focus()
+    }
+  })
 })
 
 export default router

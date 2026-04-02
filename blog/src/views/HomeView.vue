@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useTypewriter } from '../composables/useTypewriter'
+import { useSeo } from '../composables/useSeo'
 import postsData from '../data/posts.json'
 import projectsData from '../data/projects.json'
 import type { Post, Project } from '../types'
@@ -16,12 +17,25 @@ const { display: typedText } = useTypewriter([
 ], 80, 40, 2000)
 
 useScrollReveal()
+
+useSeo({
+  title: '小满的博客 - 前端开发者',
+  description: '刘小满的个人博客，中南民族大学大四学生，专注 Vue 前端开发，分享技术文章和学习心得。',
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: '刘小满',
+    url: 'https://liuxiaoman.dev',
+    jobTitle: '前端开发工程师',
+    description: '专注 Vue 前端开发，热爱 CSS 动画与交互'
+  }
+})
 </script>
 
 <template>
   <div class="home">
     <!-- Hero 区域 -->
-    <section class="hero">
+    <section class="hero" aria-label="个人介绍">
       <div class="container hero-inner">
         <div class="avatar-wrapper reveal">
           <div class="avatar">🏔️</div>
@@ -47,9 +61,9 @@ useScrollReveal()
     </section>
 
     <!-- 最近文章 -->
-    <section class="section recent-posts">
+    <section class="section recent-posts" aria-labelledby="recent-posts-title">
       <div class="container">
-        <h2 class="section-title reveal">最近文章</h2>
+        <h2 id="recent-posts-title" class="section-title reveal">最近文章</h2>
         <div class="posts-grid">
           <router-link
             v-for="post in posts"
@@ -71,9 +85,9 @@ useScrollReveal()
     </section>
 
     <!-- 精选项目 -->
-    <section class="section recent-projects">
+    <section class="section recent-projects" aria-labelledby="recent-projects-title">
       <div class="container">
-        <h2 class="section-title reveal">精选项目</h2>
+        <h2 id="recent-projects-title" class="section-title reveal">精选项目</h2>
         <div class="projects-grid">
           <div
             v-for="project in projects"

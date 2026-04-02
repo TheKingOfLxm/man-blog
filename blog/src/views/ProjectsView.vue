@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { useSeo } from '../composables/useSeo'
 import projectsData from '../data/projects.json'
 import type { Project } from '../types'
 
 const projects = projectsData as Project[]
 
 useScrollReveal()
+
+useSeo({
+  title: '作品集 - 小满的博客',
+  description: '刘小满的前端项目作品集，包括个人博客、待办事项应用、天气查询应用等 Vue 3 项目。'
+})
 </script>
 
 <template>

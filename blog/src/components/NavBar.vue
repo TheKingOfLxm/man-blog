@@ -27,7 +27,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 </script>
 
 <template>
-  <nav class="navbar" :class="{ scrolled, open: menuOpen }">
+  <nav class="navbar" :class="{ scrolled, open: menuOpen }" aria-label="主导航">
     <div class="navbar-inner container">
       <RouterLink to="/" class="logo">
         <span class="logo-icon">◆</span>
@@ -35,13 +35,14 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
       </RouterLink>
 
       <div class="nav-right">
-        <div class="nav-links">
+        <div class="nav-links" role="menubar">
           <RouterLink
             v-for="link in navLinks"
             :key="link.path"
             :to="link.path"
             class="nav-link"
             :class="{ active: route.path === link.path || (link.path !== '/' && route.path.startsWith(link.path)) }"
+            role="menuitem"
             @click="menuOpen = false"
           >
             {{ link.label }}
@@ -50,7 +51,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
         <ThemeToggle />
       </div>
 
-      <button class="hamburger" @click="toggleMenu" :class="{ active: menuOpen }">
+      <button class="hamburger" @click="toggleMenu" :class="{ active: menuOpen }" aria-label="切换菜单" :aria-expanded="menuOpen">
         <span></span>
         <span></span>
         <span></span>
@@ -58,12 +59,13 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
     </div>
 
     <!-- 移动端菜单 -->
-    <div class="mobile-menu" v-if="menuOpen">
+    <div class="mobile-menu" v-if="menuOpen" role="menu">
       <RouterLink
         v-for="link in navLinks"
         :key="link.path"
         :to="link.path"
         class="mobile-link"
+        role="menuitem"
         @click="menuOpen = false"
       >
         {{ link.label }}

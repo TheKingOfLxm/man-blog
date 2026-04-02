@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { useSeo } from '../composables/useSeo'
 
 useScrollReveal()
+
+useSeo({
+  title: '关于我 - 小满的博客',
+  description: '刘小满，中南民族大学计算机专业大四学生，专注 Vue 前端开发，热爱 CSS 动画与交互设计。',
+  jsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: '刘小满',
+    jobTitle: '前端开发工程师',
+    description: '中南民族大学计算机专业大四学生，专注 Vue 前端开发'
+  }
+})
 
 const skills = [
   { name: 'Vue 3', level: 90 },
