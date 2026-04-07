@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useSeo } from '../composables/useSeo'
 import postsData from '../data/posts.json'
@@ -8,18 +8,43 @@ import type { Post } from '../types'
 const posts = postsData as Post[]
 const selectedCategory = ref('全部')
 const searchQuery = ref('')
+const displayPosts = ref<Post[]>([])
 
 const categories = ['全部', ...new Set(posts.map(p => p.category))]
 
-const filteredPosts = computed(() => {
-  return posts.filter(post => {
-    const matchCategory = selectedCategory.value === '全部' || post.category === selectedCategory.value
-    const matchSearch = !searchQuery.value || post.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-    return matchCategory && matchSearch
-  })
+// 初始化显示所有文章
+displayPosts.value = posts
+
+const { refresh: refreshReveal } = useScrollReveal()
+
+// 监听分类变化，更新显示的文章
+watch(selectedCategory, (newCategory) => {
+  if (newCategory === '全部') {
+    displayPosts.value = posts
+  } else {
+    displayPosts.value = posts.filter(post => post.category === newCategory)
+  }
+  nextTick(() => refreshReveal())
 })
 
-useScrollReveal()
+// 监听搜索变化
+watch(searchQuery, (newQuery) => {
+  if (!newQuery) {
+    if (selectedCategory.value === '全部') {
+      displayPosts.value = posts
+    } else {
+      displayPosts.value = posts.filter(post => post.category === selectedCategory.value)
+    }
+  } else {
+    const basePosts = selectedCategory.value === '全部'
+      ? posts
+      : posts.filter(post => post.category === selectedCategory.value)
+    displayPosts.value = basePosts.filter(post =>
+      post.title.toLowerCase().includes(newQuery.toLowerCase())
+    )
+  }
+  nextTick(() => refreshReveal())
+})
 
 useSeo({
   title: '技术博客 - 小满的博客',
@@ -70,7 +95,7 @@ useSeo({
 
       <div class="posts-grid">
         <router-link
-          v-for="post in filteredPosts"
+          v-for="post in displayPosts"
           :key="post.id"
           :to="`/blog/${post.id}`"
           class="post-card glass glass-hover reveal"
@@ -88,7 +113,7 @@ useSeo({
         </router-link>
       </div>
 
-      <div v-if="filteredPosts.length === 0" class="empty-state reveal" role="status">
+      <div v-if="displayPosts.length === 0" class="empty-state reveal" role="status">
         <p>没有找到匹配的文章</p>
       </div>
     </div>

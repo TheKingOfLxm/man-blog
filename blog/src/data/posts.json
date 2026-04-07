@@ -43,5 +43,14 @@
     "category": "随笔",
     "date": "2026-01-30",
     "tags": ["学习路线", "总结", "成长"]
+  },
+  {
+    "id": "element-ui-resetfields-guide",
+    "title": "Element UI resetFields() 避坑指南",
+    "summary": "90% 的人都会踩的坑！resetFields() 不是清空表单，而是重置为初始值。编辑页回显后如何正确清空？这篇文章讲清楚。",
+    "content": "posts/element-ui-resetfields-guide.md",
+    "category": "Vue",
+    "date": "2026-04-07",
+    "tags": ["Element UI", "Vue 2", "表单"]
   }
 ]
