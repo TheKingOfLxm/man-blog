@@ -1,0 +1,50 @@
+/* 自定暖色 hljs 主题：CSS 变量驱动亮/暗，与全站统一。
+   取代 highlight.js 官方 atom-one-light/dark（全局无法切换主题）。 */
+:root {
+  --code-bg: #f7f1e6;
+  --code-text: #3f3a32;
+  --c-keyword: #b45309;
+  --c-string: #15803d;
+  --c-number: #9a3412;
+  --c-literal: #9a3412;
+  --c-comment: #a8a096;
+  --c-title: #7c2d12;
+  --c-function: #1c1917;
+  --c-attr: #92400e;
+  --c-built_in: #047857;
+  --c-tag: #b45309;
+  --c-meta: #a8a096;
+}
+[data-theme='dark'] {
+  --code-bg: #211c17;
+  --code-text: #d6cdbf;
+  --c-keyword: #fbbf24;
+  --c-string: #86efac;
+  --c-number: #fdba74;
+  --c-literal: #fdba74;
+  --c-comment: #7c7264;
+  --c-title: #fed7aa;
+  --c-function: #f5efe4;
+  --c-attr: #fcd34d;
+  --c-built_in: #6ee7b7;
+  --c-tag: #fbbf24;
+  --c-meta: #7c7264;
+}
+
+.hljs {
+  color: var(--code-text);
+  background: transparent;
+}
+.hljs-comment, .hljs-quote { color: var(--c-comment); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-type { color: var(--c-keyword); }
+.hljs-string, .hljs-regexp, .hljs-addition { color: var(--c-string); }
+.hljs-number, .hljs-literal, .hljs-symbol, .hljs-bullet { color: var(--c-literal); }
+.hljs-title, .hljs-title.function_, .hljs-section { color: var(--c-title); }
+.hljs-function .hljs-title { color: var(--c-function); }
+.hljs-attr, .hljs-attribute, .hljs-variable, .hljs-template-variable { color: var(--c-attr); }
+.hljs-built_in, .hljs-class .hljs-title, .hljs-name { color: var(--c-built_in); }
+.hljs-tag { color: var(--c-tag); }
+.hljs-meta { color: var(--c-meta); }
+.hljs-deletion { color: var(--c-literal); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }

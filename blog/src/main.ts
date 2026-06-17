@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 import router from './router'
 import App from './App.vue'
 import { vGlow } from './composables/useCardGlow'
-import 'highlight.js/styles/atom-one-light.css'
+import './assets/styles/code-theme.css'
 import './assets/styles/global.css'
 
 const app = createApp(App)
