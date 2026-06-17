@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import NavBar from './components/NavBar.vue'
 import BackToTop from './components/BackToTop.vue'
+import SearchOverlay from './components/SearchOverlay.vue'
+
 const searchOpen = ref(false)
 </script>
 
@@ -13,4 +15,5 @@ const searchOpen = ref(false)
     </transition>
   </router-view>
   <BackToTop />
+  <SearchOverlay v-model:open="searchOpen" />
 </template>
