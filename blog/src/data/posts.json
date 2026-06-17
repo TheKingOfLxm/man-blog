@@ -6,7 +6,14 @@
     "content": "posts/vue3-reactive-principle.md",
     "category": "Vue",
     "date": "2026-03-20",
-    "tags": ["Vue 3", "响应式", "Proxy"]
+    "tags": [
+      "Vue 3",
+      "响应式",
+      "Proxy"
+    ],
+    "featured": true,
+    "wordCount": 311,
+    "readingTime": 1
   },
   {
     "id": "pinia-state-management",
@@ -15,7 +22,13 @@
     "content": "posts/pinia-state-management.md",
     "category": "Vue",
     "date": "2026-03-08",
-    "tags": ["Vue 3", "Pinia", "状态管理"]
+    "tags": [
+      "Vue 3",
+      "Pinia",
+      "状态管理"
+    ],
+    "wordCount": 262,
+    "readingTime": 1
   },
   {
     "id": "css-animation-tips",
@@ -24,7 +37,13 @@
     "content": "posts/css-animation-tips.md",
     "category": "CSS",
     "date": "2026-02-25",
-    "tags": ["CSS", "动画", "性能优化"]
+    "tags": [
+      "CSS",
+      "动画",
+      "性能优化"
+    ],
+    "wordCount": 253,
+    "readingTime": 1
   },
   {
     "id": "vite-config-guide",
@@ -33,7 +52,13 @@
     "content": "posts/vite-config-guide.md",
     "category": "工程化",
     "date": "2026-02-12",
-    "tags": ["Vite", "工程化", "构建工具"]
+    "tags": [
+      "Vite",
+      "工程化",
+      "构建工具"
+    ],
+    "wordCount": 142,
+    "readingTime": 1
   },
   {
     "id": "frontend-journey",
@@ -42,7 +67,13 @@
     "content": "posts/frontend-journey.md",
     "category": "随笔",
     "date": "2026-01-30",
-    "tags": ["学习路线", "总结", "成长"]
+    "tags": [
+      "学习路线",
+      "总结",
+      "成长"
+    ],
+    "wordCount": 549,
+    "readingTime": 2
   },
   {
     "id": "element-ui-resetfields-guide",
@@ -51,6 +82,12 @@
     "content": "posts/element-ui-resetfields-guide.md",
     "category": "Vue",
     "date": "2026-04-07",
-    "tags": ["Element UI", "Vue 2", "表单"]
+    "tags": [
+      "Element UI",
+      "Vue 2",
+      "表单"
+    ],
+    "wordCount": 263,
+    "readingTime": 1
   }
 ]
