@@ -1,268 +1,136 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useSeo } from '../composables/useSeo'
 import postsData from '../data/posts.json'
+import PostCard from '../components/PostCard.vue'
+import TagFilter from '../components/TagFilter.vue'
 import type { Post } from '../types'
 
+const route = useRoute()
+const router = useRouter()
 const posts = postsData as Post[]
-const selectedCategory = ref('全部')
-const searchQuery = ref('')
-const displayPosts = ref<Post[]>([])
 
-const categories = ['全部', ...new Set(posts.map(p => p.category))]
+const categories = ['全部', ...Array.from(new Set(posts.map(p => p.category)))]
+const allTags = Array.from(new Set(posts.flatMap(p => p.tags))).sort()
 
-// 初始化显示所有文章
-displayPosts.value = posts
+const selectedCategory = ref<string>((route.query.cat as string) || '全部')
+const selectedTag = ref<string>((route.query.tag as string) || '')
 
-const { refresh: refreshReveal } = useScrollReveal()
-
-// 监听分类变化，更新显示的文章
-watch(selectedCategory, (newCategory) => {
-  if (newCategory === '全部') {
-    displayPosts.value = posts
-  } else {
-    displayPosts.value = posts.filter(post => post.category === newCategory)
-  }
-  nextTick(() => refreshReveal())
+const filtered = computed(() => {
+  return posts.filter((p) => {
+    const catOk = selectedCategory.value === '全部' || p.category === selectedCategory.value
+    const tagOk = !selectedTag.value || p.tags.includes(selectedTag.value)
+    return catOk && tagOk
+  })
 })
 
-// 监听搜索变化
-watch(searchQuery, (newQuery) => {
-  if (!newQuery) {
-    if (selectedCategory.value === '全部') {
-      displayPosts.value = posts
-    } else {
-      displayPosts.value = posts.filter(post => post.category === selectedCategory.value)
-    }
-  } else {
-    const basePosts = selectedCategory.value === '全部'
-      ? posts
-      : posts.filter(post => post.category === selectedCategory.value)
-    displayPosts.value = basePosts.filter(post =>
-      post.title.toLowerCase().includes(newQuery.toLowerCase())
-    )
-  }
-  nextTick(() => refreshReveal())
+// 查询参数双向同步
+watch([selectedCategory, selectedTag], ([cat, tag]) => {
+  const query: Record<string, string> = {}
+  if (cat && cat !== '全部') query.cat = cat
+  if (tag) query.tag = tag
+  router.replace({ query })
 })
+
+const { refresh } = useScrollReveal()
+watch(filtered, () => { refresh() })
 
 useSeo({
-  title: '技术博客 - 小满的博客',
-  description: '记录前端开发学习路上的思考与实践，涵盖 Vue 3、CSS 动画、Vite 工程化等主题。',
-  type: 'website',
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@type': 'Blog',
-    name: '小满的技术博客',
-    description: '记录前端开发学习路上的思考与实践',
-    author: {
-      '@type': 'Person',
-      name: '刘小满'
-    }
-  }
+  title: '文章 - 小满的技术随笔',
+  description: '记录 Vue、CSS、工程化等前端实践里的思考与避坑。',
+  type: 'website'
 })
 </script>
 
 <template>
-  <div class="blog-page">
-    <div class="container">
-      <section class="blog-header">
-        <h1 class="reveal">技术博客</h1>
-        <p class="subtitle reveal">记录学习路上的思考与实践</p>
-      </section>
+  <div class="blog container">
+    <header class="page-head reveal">
+      <span class="kicker">Archive</span>
+      <h1>文章</h1>
+      <p class="subtitle">记录学习路上的思考与实践</p>
+    </header>
 
-      <div class="filters reveal">
-        <div class="category-filter">
-          <button
-            v-for="cat in categories"
-            :key="cat"
-            class="filter-btn"
-            :class="{ active: selectedCategory === cat }"
-            :aria-pressed="selectedCategory === cat"
-            @click="selectedCategory = cat"
-          >
-            {{ cat }}
-          </button>
-        </div>
-        <input
-          v-model="searchQuery"
-          class="search-input glass"
-          type="text"
-          placeholder="搜索文章..."
-          aria-label="搜索文章"
-        />
+    <div class="filters reveal">
+      <div class="cat-tabs">
+        <button
+          v-for="cat in categories"
+          :key="cat"
+          class="cat-btn"
+          :class="{ active: selectedCategory === cat }"
+          @click="selectedCategory = cat"
+        >{{ cat }}</button>
       </div>
+      <TagFilter v-model="selectedTag" :tags="allTags" />
+    </div>
 
-      <div class="posts-grid">
-        <router-link
-          v-for="post in displayPosts"
-          :key="post.id"
-          :to="`/blog/${post.id}`"
-          class="post-card glass glass-hover reveal"
-          v-glow
-        >
-          <span class="tag">{{ post.category }}</span>
-          <h3>{{ post.title }}</h3>
-          <p>{{ post.summary }}</p>
-          <div class="post-meta">
-            <span class="post-date">{{ post.date }}</span>
-            <div class="post-tags">
-              <span v-for="tag in post.tags" :key="tag" class="mini-tag">{{ tag }}</span>
-            </div>
-          </div>
-        </router-link>
-      </div>
-
-      <div v-if="displayPosts.length === 0" class="empty-state reveal" role="status">
-        <p>没有找到匹配的文章</p>
-      </div>
+    <div class="posts-grid" v-if="filtered.length">
+      <PostCard v-for="post in filtered" :key="post.id" :post="post" />
+    </div>
+    <div v-else class="empty reveal" role="status">
+      <p>没有找到匹配的文章</p>
+      <button class="btn btn-outline btn-sm" @click="selectedCategory = '全部'; selectedTag = ''">清除筛选</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.blog-page {
+.blog {
   padding-top: calc(var(--nav-height) + 40px);
   padding-bottom: 80px;
-  min-height: 100vh;
 }
-
-.blog-header {
+.page-head {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
-
-.blog-header h1 {
-  font-size: 36px;
-  font-weight: 800;
-  margin-bottom: 8px;
+.page-head h1 {
+  font-size: clamp(28px, 5vw, 40px);
+  margin: 10px 0 6px;
 }
-
-.subtitle {
-  color: var(--text-muted);
-  font-size: 16px;
-}
-
+.subtitle { color: var(--text-muted); font-size: 15px; }
 .filters {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 16px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
+  padding-bottom: 24px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
 }
-
-.category-filter {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 8px 18px;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  background: transparent;
+.cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.cat-btn {
+  padding: 7px 16px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
   color: var(--text-body);
-  font-size: 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
-
-.filter-btn:hover,
-.filter-btn.active {
-  background: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+.cat-btn:hover { color: var(--accent); border-color: var(--accent); }
+.cat-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg-page);
 }
-
-.search-input {
-  padding: 10px 18px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  color: var(--text-body);
-  background: var(--bg-card);
-  outline: none;
-  width: 240px;
-  transition: border-color var(--transition-fast);
-}
-
-.search-input:focus {
-  border-color: var(--color-primary);
-}
-
 .posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 28px;
+  padding-top: 20px;
 }
-
-.post-card {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-decoration: none;
-  color: inherit;
-  transition: all var(--transition-fast);
-}
-
-.post-card h3 {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.post-card p {
-  color: var(--text-muted);
-  font-size: 14px;
-  line-height: 1.6;
-  flex: 1;
-}
-
-.post-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.post-date {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.post-tags {
-  display: flex;
-  gap: 4px;
-}
-
-.mini-tag {
-  font-size: 11px;
-  padding: 2px 8px;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  border-radius: 10px;
-}
-
-.empty-state {
+.empty {
   text-align: center;
   padding: 60px 0;
   color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
 }
-
-@media (max-width: 768px) {
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
-  .posts-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 640px) {
+  .posts-grid { grid-template-columns: 1fr; }
 }
 </style>
