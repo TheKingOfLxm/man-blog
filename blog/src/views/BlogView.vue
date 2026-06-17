@@ -34,7 +34,8 @@ watch([selectedCategory, selectedTag], ([cat, tag]) => {
   router.replace({ query })
 })
 
-const { refresh } = useScrollReveal()
+const rootRef = ref<HTMLElement | null>(null)
+const { refresh } = useScrollReveal(rootRef)
 watch(filtered, () => { refresh() })
 
 useSeo({
@@ -45,11 +46,11 @@ useSeo({
 </script>
 
 <template>
-  <div class="blog container">
+  <div class="blog container" ref="rootRef">
     <header class="page-head reveal">
       <span class="kicker">Archive</span>
       <h1>文章</h1>
-      <p class="subtitle">记录学习路上的思考与实践</p>
+      <p class="subtitle">记录前端实践里的思考、踩坑与避坑</p>
     </header>
 
     <div class="filters reveal">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useSeo } from '../composables/useSeo'
 import postsData from '../data/posts.json'
@@ -25,7 +25,8 @@ function size(count: number, max: number) {
   return Math.round(min + (top - min) * (count / max))
 }
 
-useScrollReveal()
+const rootRef = ref<HTMLElement | null>(null)
+useScrollReveal(rootRef)
 useSeo({
   title: '标签索引 - 小满的技术随笔',
   description: '按分类与标签浏览全部文章。'
@@ -33,7 +34,7 @@ useSeo({
 </script>
 
 <template>
-  <div class="tags container">
+  <div class="tags container" ref="rootRef">
     <header class="page-head reveal">
       <span class="kicker">Index</span>
       <h1>标签索引</h1>

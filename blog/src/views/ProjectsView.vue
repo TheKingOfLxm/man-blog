@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useSeo } from '../composables/useSeo'
 import projectsData from '../data/projects.json'
@@ -6,7 +7,8 @@ import ProjectCard from '../components/ProjectCard.vue'
 import type { Project } from '../types'
 
 const projects = projectsData as Project[]
-useScrollReveal()
+const rootRef = ref<HTMLElement | null>(null)
+useScrollReveal(rootRef)
 useSeo({
   title: '作品 - 小满的技术随笔',
   description: '刘小满的前端项目作品集。'
@@ -14,7 +16,7 @@ useSeo({
 </script>
 
 <template>
-  <div class="projects container">
+  <div class="projects container" ref="rootRef">
     <header class="page-head reveal">
       <span class="kicker">Works</span>
       <h1>作品</h1>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useSeo } from '../composables/useSeo'
 import site from '../data/site.json'
 
-useScrollReveal()
+const rootRef = ref<HTMLElement | null>(null)
+useScrollReveal(rootRef)
 useSeo({
   title: '关于 - 小满的技术随笔',
   description: '关于这个博客：记录 Vue、CSS、工程化等前端实践，博主亦好旧体诗。'
@@ -20,7 +22,7 @@ const skills = [
 </script>
 
 <template>
-  <div class="about container">
+  <div class="about container" ref="rootRef">
     <header class="page-head reveal">
       <span class="kicker">About</span>
       <h1>关于</h1>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useSeo } from '../composables/useSeo'
 import postsData from '../data/posts.json'
@@ -21,7 +21,8 @@ const recent = computed(() => {
   return posts.filter(p => p.id !== f.id).slice(0, 3)
 })
 
-useScrollReveal()
+const rootRef = ref<HTMLElement | null>(null)
+useScrollReveal(rootRef)
 
 useSeo({
   title: '小满的技术随笔 - 前端开发者',
@@ -37,7 +38,7 @@ useSeo({
 </script>
 
 <template>
-  <div class="home container">
+  <div class="home container" ref="rootRef">
     <Masthead />
     <Epigraph />
 
