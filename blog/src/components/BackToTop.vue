@@ -28,29 +28,27 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 <style scoped>
 .back-to-top {
   position: fixed;
-  bottom: 32px;
-  right: 32px;
-  width: 44px;
-  height: 44px;
+  bottom: 28px;
+  right: 28px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  backdrop-filter: blur(var(--blur-amount));
-  color: var(--color-primary);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--accent);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px var(--shadow-color);
+  box-shadow: var(--shadow);
   transition: all var(--transition-fast);
   z-index: 90;
 }
-
 .back-to-top:hover {
-  background: var(--color-primary);
-  color: white;
+  background: var(--accent);
+  color: #fffdf8;
+  border-color: var(--accent);
   transform: translateY(-3px);
-  box-shadow: 0 6px 24px var(--shadow-color);
 }
 
 .fade-enter-active,

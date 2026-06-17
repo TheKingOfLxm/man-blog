@@ -3,35 +3,35 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import ThemeToggle from './ThemeToggle.vue'
 
+const emit = defineEmits<{ (e: 'search'): void }>()
+
 const scrolled = ref(false)
 const menuOpen = ref(false)
 const route = useRoute()
 
 const navLinks = [
   { path: '/', label: '首页' },
-  { path: '/blog', label: '博客' },
-  { path: '/projects', label: '作品集' },
+  { path: '/blog', label: '文章' },
+  { path: '/projects', label: '作品' },
   { path: '/about', label: '关于' }
 ]
 
 function handleScroll() {
-  scrolled.value = window.scrollY > 20
+  scrolled.value = window.scrollY > 16
 }
-
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
-
-onMounted(() => window.addEventListener('scroll', handleScroll))
+onMounted(() => window.addEventListener('scroll', handleScroll, { passive: true }))
 onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 </script>
 
 <template>
-  <nav class="navbar" :class="{ scrolled, open: menuOpen }" aria-label="主导航">
+  <nav class="navbar" :class="{ scrolled }" aria-label="主导航">
     <div class="navbar-inner container">
       <RouterLink to="/" class="logo">
-        <span class="logo-icon">◆</span>
-        <span class="logo-text">小满的博客</span>
+        <span class="logo-mark">◆</span>
+        <span class="logo-text">小满的技术随笔</span>
       </RouterLink>
 
       <div class="nav-right">
@@ -44,21 +44,17 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
             :class="{ active: route.path === link.path || (link.path !== '/' && route.path.startsWith(link.path)) }"
             role="menuitem"
             @click="menuOpen = false"
-          >
-            {{ link.label }}
-          </RouterLink>
+          >{{ link.label }}</RouterLink>
         </div>
+        <button class="icon-btn search-btn" @click="emit('search')" aria-label="搜索文章">⌕</button>
         <ThemeToggle />
       </div>
 
       <button class="hamburger" @click="toggleMenu" :class="{ active: menuOpen }" aria-label="切换菜单" :aria-expanded="menuOpen">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
 
-    <!-- 移动端菜单 -->
     <div class="mobile-menu" v-if="menuOpen" role="menu">
       <RouterLink
         v-for="link in navLinks"
@@ -67,9 +63,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
         class="mobile-link"
         role="menuitem"
         @click="menuOpen = false"
-      >
-        {{ link.label }}
-      </RouterLink>
+      >{{ link.label }}</RouterLink>
+      <button class="mobile-link mobile-search" @click="emit('search'); menuOpen = false">⌕ 搜索文章</button>
     </div>
   </nav>
 </template>
@@ -77,71 +72,80 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 <style scoped>
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 100;
   height: var(--nav-height);
-  transition: all var(--transition-normal);
+  transition: background var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+  border-bottom: 1px solid transparent;
 }
-
 .navbar.scrolled {
-  background: var(--bg-nav);
-  backdrop-filter: blur(var(--blur-amount));
-  -webkit-backdrop-filter: blur(var(--blur-amount));
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 2px 20px var(--shadow-color);
+  background: color-mix(in srgb, var(--bg-page) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom-color: var(--border);
 }
-
 .navbar-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 100%;
 }
-
 .logo {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-heading);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
   text-decoration: none;
+  letter-spacing: -0.01em;
 }
-
-.logo-icon {
-  color: var(--color-primary);
-  font-size: 22px;
+.logo-mark {
+  color: var(--accent);
+  font-size: 15px;
 }
-
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 18px;
 }
-
 .nav-links {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
-
 .nav-link {
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  font-family: var(--font-sans);
   color: var(--text-body);
+  font-size: 14px;
   font-weight: 500;
-  font-size: 15px;
-  transition: all var(--transition-fast);
   text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
 }
-
-.nav-link:hover,
+.nav-link:hover {
+  color: var(--accent);
+}
 .nav-link.active {
-  color: var(--color-primary);
-  background: var(--color-primary-light);
+  color: var(--ink);
+  font-weight: 600;
 }
-
+.icon-btn {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-body);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.icon-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 .hamburger {
   display: none;
   flex-direction: column;
@@ -151,61 +155,39 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   border: none;
   cursor: pointer;
 }
-
 .hamburger span {
   display: block;
-  width: 22px;
-  height: 2px;
-  background: var(--text-heading);
+  width: 20px; height: 2px;
+  background: var(--ink);
   border-radius: 2px;
   transition: all var(--transition-fast);
 }
-
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
+.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 .mobile-menu {
   display: none;
   flex-direction: column;
-  padding: 16px 24px;
-  background: var(--bg-nav);
-  backdrop-filter: blur(var(--blur-amount));
-  border-bottom: 1px solid var(--border-color);
+  padding: 10px 24px 18px;
+  background: var(--bg-page);
+  border-bottom: 1px solid var(--border);
 }
-
 .mobile-link {
-  padding: 12px 0;
+  padding: 13px 0;
   color: var(--text-body);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   text-decoration: none;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-soft);
+  text-align: left;
+  background: none;
+  border-left: none; border-right: none; border-top: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
 }
-
-.mobile-link:last-child {
-  border-bottom: none;
-}
-
 @media (max-width: 768px) {
-  .nav-right {
-    display: none;
-  }
-
-  .hamburger {
-    display: flex;
-  }
-
-  .mobile-menu {
-    display: flex;
-  }
+  .nav-right { display: none; }
+  .hamburger { display: flex; }
+  .mobile-menu { display: flex; }
 }
 </style>

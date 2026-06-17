@@ -82,20 +82,19 @@ function toggleWithAnimation(e: MouseEvent) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-card);
-  color: var(--color-primary);
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--accent);
   cursor: pointer;
   transition: all var(--transition-fast);
-  backdrop-filter: blur(8px);
 }
-
 .theme-toggle:hover {
-  background: var(--color-primary);
-  color: white;
-  transform: rotate(15deg);
+  background: var(--accent);
+  color: #fffdf8;
+  border-color: var(--accent);
+  transform: none;
 }
 </style>
