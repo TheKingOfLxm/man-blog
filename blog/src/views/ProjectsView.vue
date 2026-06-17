@@ -20,7 +20,7 @@ useSeo({
     <header class="page-head reveal">
       <span class="kicker">Works</span>
       <h1>作品</h1>
-      <p class="subtitle">前端学习路上完成的项目</p>
+      <p class="subtitle">前端实践里做过的一些项目</p>
     </header>
     <div class="grid">
       <ProjectCard v-for="project in projects" :key="project.id" :project="project" />
