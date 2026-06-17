@@ -1,4 +1,4 @@
-import { watch, onUnmounted, unref } from 'vue'
+import { watch, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 export interface SeoOptions {
@@ -51,7 +51,7 @@ function removeJsonLd() {
  */
 export function useSeo(options: SeoOptions | (() => SeoOptions)) {
   const route = useRoute()
-  const resolve = (): SeoOptions => (typeof options === 'function' ? options() : unref(options) as SeoOptions)
+  const resolve = (): SeoOptions => (typeof options === 'function' ? options() : options)
 
   function applySeo() {
     const o = resolve()
