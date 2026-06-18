@@ -8,7 +8,7 @@ const rootRef = ref<HTMLElement | null>(null)
 useScrollReveal(rootRef)
 useSeo({
   title: '关于 - 小满的技术随笔',
-  description: '关于这个博客：记录 Vue、CSS、工程化等前端实践，博主亦好旧体诗。'
+  description: '关于这个博客：记录 Vue、CSS、工程化等前端实践。'
 })
 
 const skills = [
@@ -50,13 +50,6 @@ const skills = [
           <div class="skill-head"><span>{{ s.name }}</span><span class="pct">{{ s.level }}%</span></div>
           <div class="bar"><div class="fill" :style="{ width: s.level + '%' }"></div></div>
         </div>
-      </div>
-    </section>
-
-    <section class="block reveal">
-      <h2 class="block-title">兼好旧体诗</h2>
-      <div class="prose">
-        <p>代码之外，我也写一点旧体诗词。以为敲键如推敲，字字皆平仄——技术求精确，文字求余味，二者于我皆是癖好。</p>
       </div>
     </section>
 
