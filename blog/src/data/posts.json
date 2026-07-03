@@ -89,5 +89,21 @@
     ],
     "wordCount": 263,
     "readingTime": 1
+  },
+  {
+    "id": "admin-scaffold-methodology",
+    "title": "后台管理系统架子搭建：通用方法论",
+    "summary": "不谈具体技术栈，只讲套路。一份可复用的后台架子搭建指南：五层架构、网络层、动态路由、权限设计、API 规范，以及 4 个常见反模式。",
+    "content": "posts/admin-scaffold-methodology.md",
+    "category": "工程化",
+    "date": "2026-07-03",
+    "tags": [
+      "后台管理",
+      "架构设计",
+      "工程化"
+    ],
+    "featured": true,
+    "wordCount": 3500,
+    "readingTime": 10
   }
 ]
