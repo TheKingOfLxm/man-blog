@@ -24,6 +24,12 @@ const tocItems = ref<TocItem[]>([])
 const activeHeading = ref('')
 let spyObserver: IntersectionObserver | null = null
 
+// markdown-it v14 移除了 MarkdownIt.prototype.utils；自己实现 escapeHtml，避免依赖实例。
+function escapeHtml(s: string): string {
+  const map: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
+  return s.replace(/[&<>"']/g, (c) => map[c])
+}
+
 const md: MarkdownIt = new MarkdownIt({
   html: true,
   linkify: true,
@@ -36,7 +42,7 @@ const md: MarkdownIt = new MarkdownIt({
           '</code></pre>'
       } catch { /* fallback */ }
     }
-    return '<pre class="hljs"><code>' + MarkdownIt.prototype.utils.escapeHtml(str) + '</code></pre>'
+    return '<pre class="hljs"><code>' + escapeHtml(str) + '</code></pre>'
   }
 })
 
