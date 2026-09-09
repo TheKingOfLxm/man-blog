@@ -15,10 +15,13 @@ export interface Project {
   id: string
   title: string
   description: string
-  image: string
+  category: string
+  cover: 'science' | 'commerce' | 'jiwo' | 'journal'
+  coverTitle: [string, string]
+  highlights: string[]
   tags: string[]
   demo?: string
-  source?: string
+  source: string
 }
 
 export interface Epigraph {

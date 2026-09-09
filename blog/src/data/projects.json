@@ -1,35 +1,46 @@
 [
   {
-    "id": "personal-blog",
-    "title": "个人博客网站",
-    "description": "以代码为笔的个人创作空间。Vue 3 驱动内容，GSAP 编排动效，Three.js 赋予灵感形状，让技术记录也有独特的表达。",
-    "image": "/images/projects/blog.jpg",
-    "tags": ["Vue 3", "TypeScript", "Vite", "Pinia"],
-    "demo": "https://thekingoflxm.github.io/blog",
-    "source": "https://github.com/TheKingOfLxm/blog"
+    "id": "ancient-science-visualization",
+    "title": "古代科技 · 沉浸式可视化",
+    "description": "将古代科技展览与数据可视化放进同一个探索空间。Three.js 构建天空、水面与 3D 导航，GSAP 串联场景切换，结合图表模块呈现科技主题数据。",
+    "category": "3D 交互 / 数据可视化",
+    "cover": "science",
+    "coverTitle": ["Ancient", "futures."],
+    "highlights": ["3D 场景导航", "科技展览", "数据看板"],
+    "tags": ["Vue 3", "Three.js", "ECharts", "GSAP"],
+    "source": "https://github.com/TheKingOfLxm/ancient-science-visualization"
   },
   {
-    "id": "todo-app",
-    "title": "待办事项应用",
-    "description": "Vue 3 + Pinia 实现的全功能待办应用，支持拖拽排序、分类筛选、本地持久化存储，是学习 Vue 3 时写的第一个完整项目。",
-    "image": "/images/projects/todo.jpg",
-    "tags": ["Vue 3", "Pinia", "CSS3"],
-    "source": "https://github.com/TheKingOfLxm/todo-app"
+    "id": "Commerce-Management-System",
+    "title": "校园商会 · 商家管理中心",
+    "description": "面向校园商会的跨端管理界面，覆盖项目、消息、会员与财务等业务页面。通过 Pinia、类型定义和独立 API 层组织业务，内置 Mock 数据，支持 H5 与微信小程序。",
+    "category": "跨端应用 / 业务系统",
+    "cover": "commerce",
+    "coverTitle": ["Better", "connected."],
+    "highlights": ["商会工作台", "项目管理", "会员与财务"],
+    "tags": ["uni-app", "Vue 3", "TypeScript", "Pinia"],
+    "source": "https://github.com/TheKingOfLxm/Commerce-Management-System"
   },
   {
-    "id": "weather-app",
-    "title": "天气查询应用",
-    "description": "调用高德天气 API，实现城市搜索、实时天气展示和未来三天预报。练习了异步请求和组件通信。",
-    "image": "/images/projects/weather.jpg",
-    "tags": ["Vue 3", "Axios", "API"],
-    "source": "https://github.com/TheKingOfLxm/weather-app"
+    "id": "jiwo",
+    "title": "即我 · 记录与安排",
+    "description": "围绕日常信息整理构建的移动端交互应用，串联会话、记录与安排。支持手动创建安排、查看详情和完成归档，在细致的页面交互中探索个人信息管理。",
+    "category": "移动端交互 / 效率工具",
+    "cover": "jiwo",
+    "coverTitle": ["Small notes.", "Clear mind."],
+    "highlights": ["会话与记录", "创建安排", "完成归档"],
+    "tags": ["React 18", "TypeScript", "Tailwind CSS", "Vite"],
+    "source": "https://github.com/TheKingOfLxm/jiwo"
   },
   {
-    "id": "markdown-editor",
-    "title": "Markdown 编辑器",
-    "description": "支持实时预览和代码高亮的在线 Markdown 编辑器，纯前端实现，深入理解了 contenteditable 和字符串解析。",
-    "image": "/images/projects/editor.jpg",
-    "tags": ["JavaScript", "Markdown", "CSS"],
-    "source": "https://github.com/TheKingOfLxm/markdown-editor"
+    "id": "man-blog",
+    "title": "小满 · 个人博客",
+    "description": "你正在浏览的个人创作空间。用 Vue 3 与 TypeScript 组织文章和作品，结合 Three.js 悬浮星核、GSAP 动效、Markdown 阅读、文章搜索与明暗主题，记录技术与灵感。",
+    "category": "个人网站 / 创意开发",
+    "cover": "journal",
+    "coverTitle": ["Code. Create.", "Beyond."],
+    "highlights": ["3D 悬浮星核", "Markdown 阅读", "搜索与主题"],
+    "tags": ["Vue 3", "TypeScript", "Three.js", "GSAP"],
+    "source": "https://github.com/TheKingOfLxm/man-blog"
   }
 ]

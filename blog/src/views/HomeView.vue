@@ -194,9 +194,10 @@ useSeo({
         </div>
         <div class="projects-grid">
           <ProjectCard
-            v-for="project in projects"
+            v-for="(project, index) in projects"
             :key="project.id"
             :project="project"
+            :index="index"
           />
         </div>
       </section>
