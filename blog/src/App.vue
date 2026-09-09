@@ -4,6 +4,7 @@ import NavBar from './components/NavBar.vue'
 import BackToTop from './components/BackToTop.vue'
 import SearchOverlay from './components/SearchOverlay.vue'
 import SiteFooter from './components/SiteFooter.vue'
+import PointerEffects from './components/PointerEffects.vue'
 
 const searchOpen = ref(false)
 </script>
@@ -21,4 +22,5 @@ const searchOpen = ref(false)
   <SiteFooter />
   <BackToTop />
   <SearchOverlay v-model:open="searchOpen" />
+  <PointerEffects :disabled="searchOpen" />
 </template>

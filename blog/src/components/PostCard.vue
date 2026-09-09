@@ -14,7 +14,13 @@ const categoryName = computed(
 )
 </script>
 <template>
-  <router-link :to="`/blog/${post.id}`" class="post-card reveal">
+  <router-link
+    :to="`/blog/${post.id}`"
+    class="post-card reveal"
+    data-pointer-surface
+    data-cursor-label="阅读"
+  >
+    <span class="pointer-shine" aria-hidden="true"></span>
     <div class="post-top">
       <span class="kicker">{{ categoryName }}</span
       ><span class="post-number">{{

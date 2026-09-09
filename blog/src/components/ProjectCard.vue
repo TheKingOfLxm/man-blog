@@ -7,57 +7,66 @@ withDefaults(defineProps<{ project: Project; index?: number }>(), { index: 0 })
 </script>
 
 <template>
-  <article class="project-card reveal">
-    <a
-      class="project-cover-link"
-      :href="project.source"
-      target="_blank"
-      rel="noopener noreferrer"
-      :aria-label="`在 GitHub 查看${project.title}`"
-    >
-      <ProjectCover :project="project" :index="index" />
-    </a>
-    <div class="project-body">
-      <span class="project-category">{{ project.category }}</span>
-      <h3>
-        <a :href="project.source" target="_blank" rel="noopener noreferrer">
-          {{ project.title }} <AppIcon name="diagonal" :size="18" />
-        </a>
-      </h3>
-      <p>{{ project.description }}</p>
-      <ul class="project-highlights" aria-label="项目亮点">
-        <li v-for="highlight in project.highlights" :key="highlight">
-          {{ highlight }}
-        </li>
-      </ul>
-      <div class="project-bottom">
-        <div class="project-tags">
-          <span v-for="tag in project.tags" :key="tag">{{ tag }}</span>
-        </div>
-        <div class="project-links">
-          <a
-            v-if="project.demo"
-            :href="project.demo"
-            target="_blank"
-            rel="noopener noreferrer"
-            :aria-label="`查看${project.title}演示`"
-            >体验 <AppIcon name="diagonal" :size="13"
-          /></a>
-          <a
-            :href="project.source"
-            target="_blank"
-            rel="noopener noreferrer"
-            :aria-label="`查看${project.title}源码`"
-            >源码 <AppIcon name="github" :size="14"
-          /></a>
+  <div class="project-motion reveal" data-pointer-surface>
+    <article class="project-card pointer-tilt">
+      <span class="pointer-shine" aria-hidden="true"></span>
+      <a
+        class="project-cover-link"
+        data-cursor-label="查看"
+        :href="project.source"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="`在 GitHub 查看${project.title}`"
+      >
+        <ProjectCover :project="project" :index="index" />
+      </a>
+      <div class="project-body">
+        <span class="project-category">{{ project.category }}</span>
+        <h3>
+          <a :href="project.source" target="_blank" rel="noopener noreferrer">
+            {{ project.title }} <AppIcon name="diagonal" :size="18" />
+          </a>
+        </h3>
+        <p>{{ project.description }}</p>
+        <ul class="project-highlights" aria-label="项目亮点">
+          <li v-for="highlight in project.highlights" :key="highlight">
+            {{ highlight }}
+          </li>
+        </ul>
+        <div class="project-bottom">
+          <div class="project-tags">
+            <span v-for="tag in project.tags" :key="tag">{{ tag }}</span>
+          </div>
+          <div class="project-links">
+            <a
+              v-if="project.demo"
+              :href="project.demo"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="`查看${project.title}演示`"
+              >体验 <AppIcon name="diagonal" :size="13"
+            /></a>
+            <a
+              :href="project.source"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="`查看${project.title}源码`"
+              >源码 <AppIcon name="github" :size="14"
+            /></a>
+          </div>
         </div>
       </div>
-    </div>
-  </article>
+    </article>
+  </div>
 </template>
 
 <style scoped>
+.project-motion {
+  min-width: 0;
+  height: 100%;
+}
 .project-card {
+  position: relative;
   min-width: 0;
   height: 100%;
   display: flex;
@@ -66,7 +75,9 @@ withDefaults(defineProps<{ project: Project; index?: number }>(), { index: 0 })
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--bg-surface);
-  transition: border-color 0.3s;
+  transition:
+    border-color 0.3s,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .project-card:hover,
 .project-card:focus-within {

@@ -106,7 +106,7 @@ useSeo({
           </p>
         </div>
         <div class="hero-actions">
-          <router-link to="/blog" class="btn btn-primary"
+          <router-link to="/blog" class="btn btn-primary" data-magnetic
             >探索文章 <AppIcon name="diagonal" :size="17" /></router-link
           ><router-link to="/about" class="about-link"
             >认识一下 <span><AppIcon name="arrow" :size="16" /></span
@@ -142,7 +142,13 @@ useSeo({
             >全部文章 <AppIcon name="diagonal" :size="14"
           /></router-link>
         </div>
-        <router-link :to="`/blog/${featured.id}`" class="featured reveal">
+        <router-link
+          :to="`/blog/${featured.id}`"
+          class="featured reveal"
+          data-pointer-surface
+          data-cursor-label="阅读"
+        >
+          <span class="pointer-shine" aria-hidden="true"></span>
           <div class="featured-visual" aria-hidden="true">
             <div class="feature-grid"></div>
             <div class="architecture">
@@ -210,6 +216,7 @@ useSeo({
         <a
           :href="`mailto:${site.social.email}`"
           class="contact-orbit"
+          data-magnetic
           aria-label="给刘小满发送邮件"
           ><AppIcon name="diagonal" :size="40" /><span>LET'S TALK</span></a
         ><span class="contact-watermark" aria-hidden="true">say hello.</span>

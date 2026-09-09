@@ -46,6 +46,7 @@ useEventListener('keydown', (e) => {
           :key="link.path"
           :to="link.path"
           class="nav-link"
+          data-magnetic
           :class="{
             active:
               route.path === link.path ||
@@ -58,6 +59,7 @@ useEventListener('keydown', (e) => {
       <div class="nav-actions">
         <button
           class="search-btn"
+          data-magnetic
           @click="emit('search')"
           aria-label="搜索文章"
         >
