@@ -1,44 +1,39 @@
 import { onMounted, onUnmounted, type Ref } from 'vue'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-/**
- * 在组件根元素内观察 .reveal 元素，进入视口加 .visible。
- * 传入 root 可把查询限定到组件根（避免跨组件误捕）；不传则回退到 document。
- * 通过 refresh() 重新观察新增的 .reveal（如筛选后重渲染）。
- */
+gsap.registerPlugin(ScrollTrigger)
+
+/** Scoped, reversible reveals; refresh also handles filter-created DOM. */
 export function useScrollReveal(root?: Ref<HTMLElement | null>) {
-  let observer: IntersectionObserver | null = null
-
-  function setupObserver() {
-    observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible')
-            observer?.unobserve(entry.target)
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    )
-  }
-
-  function observeAll() {
-    if (!observer) return
+  let media: gsap.MatchMedia | undefined
+  let context: gsap.Context | undefined
+  function refresh() {
+    context?.revert()
+    media?.revert()
     const scope = root?.value ?? document
-    scope.querySelectorAll('.reveal:not(.visible)').forEach((el) => {
-      observer!.observe(el)
+    media = gsap.matchMedia()
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      context = gsap.context(() => {
+        scope.querySelectorAll<HTMLElement>('.reveal').forEach((el) => {
+          gsap.from(el, {
+            y: 32,
+            opacity: 0,
+            duration: 0.85,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 96%', once: true },
+            clearProps: 'transform,opacity',
+          })
+        })
+      }, root?.value ?? undefined)
+      return () => context?.revert()
     })
+    ScrollTrigger.refresh()
   }
-
-  onMounted(() => {
-    setupObserver()
-    observeAll()
-  })
-
+  onMounted(refresh)
   onUnmounted(() => {
-    observer?.disconnect()
-    observer = null
+    context?.revert()
+    media?.revert()
   })
-
-  return { refresh: observeAll }
+  return { refresh }
 }

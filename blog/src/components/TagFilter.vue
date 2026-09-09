@@ -11,15 +11,21 @@ defineEmits<{ (e: 'update:modelValue', v: string): void }>()
     <button
       class="chip"
       :class="{ active: !modelValue }"
+      :aria-pressed="!modelValue"
       @click="$emit('update:modelValue', '')"
-    >全部标签</button>
+    >
+      全部标签
+    </button>
     <button
       v-for="t in tags"
       :key="t"
       class="chip"
       :class="{ active: modelValue === t }"
+      :aria-pressed="modelValue === t"
       @click="$emit('update:modelValue', modelValue === t ? '' : t)"
-    >{{ t }}</button>
+    >
+      {{ t }}
+    </button>
   </div>
 </template>
 
@@ -40,10 +46,13 @@ defineEmits<{ (e: 'update:modelValue', v: string): void }>()
   cursor: pointer;
   transition: all var(--transition-fast);
 }
-.chip:hover { color: var(--accent); border-color: var(--accent); }
+.chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 .chip.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fffdf8;
+  color: var(--on-accent);
 }
 </style>

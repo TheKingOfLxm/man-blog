@@ -4,31 +4,31 @@ defineProps<{
   items: { id: string; text: string; level: number }[]
   activeId: string
 }>()
-const open = ref(false)
+const mobileToc = ref<HTMLDetailsElement | null>(null)
 function jump(e: Event, id: string) {
   e.preventDefault()
+  if (mobileToc.value) mobileToc.value.open = false
   const el = document.getElementById(id)
   if (el) {
-    const top = el.getBoundingClientRect().top + window.scrollY - 80
-    window.scrollTo({ top, behavior: 'smooth' })
+    el.scrollIntoView({ behavior: 'auto', block: 'start' })
   }
-  open.value = false
 }
 </script>
 
 <template>
   <!-- 移动端折叠 -->
-  <details class="toc-mobile">
+  <details ref="mobileToc" class="toc-mobile">
     <summary>目录</summary>
     <nav class="toc-list" aria-label="文章目录">
       <a
         v-for="item in items"
         :key="item.id"
-        href="#"
+        :href="`#${item.id}`"
         class="toc-link"
-        :class="{ active: activeId === item.id, 'h3': item.level === 3 }"
+        :class="{ active: activeId === item.id, h3: item.level === 3 }"
         @click="(e) => jump(e, item.id)"
-      >{{ item.text }}</a>
+        >{{ item.text }}</a
+      >
     </nav>
   </details>
 
@@ -39,11 +39,12 @@ function jump(e: Event, id: string) {
       <a
         v-for="item in items"
         :key="item.id"
-        href="#"
+        :href="`#${item.id}`"
         class="toc-link"
-        :class="{ active: activeId === item.id, 'h3': item.level === 3 }"
+        :class="{ active: activeId === item.id, h3: item.level === 3 }"
         @click="(e) => jump(e, item.id)"
-      >{{ item.text }}</a>
+        >{{ item.text }}</a
+      >
     </nav>
   </aside>
 </template>
@@ -58,7 +59,11 @@ function jump(e: Event, id: string) {
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
-.toc-list { display: flex; flex-direction: column; gap: 2px; }
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .toc-link {
   display: block;
   padding: 5px 10px;
@@ -71,13 +76,18 @@ function jump(e: Event, id: string) {
   transition: all var(--transition-fast);
   line-height: 1.5;
 }
-.toc-link:hover { color: var(--accent); background: var(--accent-soft); }
+.toc-link:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
 .toc-link.active {
   color: var(--accent);
   border-left-color: var(--accent);
   font-weight: 600;
 }
-.toc-link.h3 { padding-left: 22px; }
+.toc-link.h3 {
+  padding-left: 22px;
+}
 
 /* 桌面侧栏 */
 .toc-aside {
@@ -87,15 +97,39 @@ function jump(e: Event, id: string) {
   flex-shrink: 0;
   padding: 4px 0;
 }
-.toc-aside .toc-list { max-height: calc(100vh - 200px); overflow-y: auto; }
+.toc-aside .toc-list {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
 
 /* 移动折叠 */
-.toc-mobile { display: none; margin-bottom: 24px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; background: var(--bg-surface); }
-.toc-mobile summary { cursor: pointer; font-weight: 600; color: var(--ink); font-family: var(--font-sans); font-size: 14px; }
-.toc-mobile .toc-list { margin-top: 12px; }
+.toc-mobile {
+  display: none;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  background: var(--bg-surface);
+}
+.toc-mobile summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+.toc-mobile .toc-list {
+  margin-top: 12px;
+}
 
 @media (max-width: 1024px) {
-  .toc-aside { display: none; }
-  .toc-mobile { display: block; }
+  .toc-aside {
+    display: none;
+  }
+  .toc-mobile {
+    display: block;
+    order: -1;
+    width: 100%;
+  }
 }
 </style>

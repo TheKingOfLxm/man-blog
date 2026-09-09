@@ -1,193 +1,259 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { ref, watch } from 'vue'
+import { useWindowScroll, useEventListener, useMediaQuery } from '@vueuse/core'
+import { useRoute } from 'vue-router'
 import ThemeToggle from './ThemeToggle.vue'
-
-const emit = defineEmits<{ (e: 'search'): void }>()
-
-const scrolled = ref(false)
+import AppIcon from './AppIcon.vue'
+const emit = defineEmits<{ search: [] }>()
 const menuOpen = ref(false)
+const isMobile = useMediaQuery('(max-width: 760px)')
+watch(isMobile, () => {
+  menuOpen.value = false
+})
+const { y } = useWindowScroll()
 const route = useRoute()
-
-const navLinks = [
-  { path: '/', label: '首页' },
-  { path: '/blog', label: '文章' },
-  { path: '/projects', label: '作品' },
-  { path: '/about', label: '关于' }
+const links = [
+  { path: '/', label: '首页', en: 'Home' },
+  { path: '/blog', label: '文章', en: 'Writing' },
+  { path: '/projects', label: '作品', en: 'Works' },
+  { path: '/about', label: '关于', en: 'About' },
 ]
-
-function handleScroll() {
-  scrolled.value = window.scrollY > 16
-}
-function toggleMenu() {
-  menuOpen.value = !menuOpen.value
-}
-onMounted(() => window.addEventListener('scroll', handleScroll, { passive: true }))
-onUnmounted(() => window.removeEventListener('scroll', handleScroll))
+watch(
+  () => route.fullPath,
+  () => (menuOpen.value = false),
+)
+useEventListener('keydown', (e) => {
+  if (e.key === 'Escape') menuOpen.value = false
+})
 </script>
-
 <template>
-  <nav class="navbar" :class="{ scrolled }" aria-label="主导航">
+  <nav
+    class="navbar"
+    :class="{ scrolled: y > 16, expanded: menuOpen }"
+    aria-label="主导航"
+  >
     <div class="navbar-inner container">
-      <RouterLink to="/" class="logo">
-        <span class="logo-mark">◆</span>
-        <span class="logo-text">小满的技术随笔</span>
-      </RouterLink>
-
-      <div class="nav-right">
-        <div class="nav-links" role="menubar">
-          <RouterLink
-            v-for="link in navLinks"
-            :key="link.path"
-            :to="link.path"
-            class="nav-link"
-            :class="{ active: route.path === link.path || (link.path !== '/' && route.path.startsWith(link.path)) }"
-            role="menuitem"
-            @click="menuOpen = false"
-          >{{ link.label }}</RouterLink>
-        </div>
-        <button class="icon-btn search-btn" @click="emit('search')" aria-label="搜索文章">⌕</button>
-        <ThemeToggle />
+      <router-link to="/" class="logo" aria-label="小满的技术随笔 · 首页"
+        ><span class="logo-symbol" aria-hidden="true">✳</span
+        ><span>小满<span class="logo-dot">.</span></span
+        ><span class="logo-caption"
+          >A DEVELOPER'S<br />PERSONAL JOURNAL</span
+        ></router-link
+      >
+      <div class="nav-links">
+        <router-link
+          v-for="link in links"
+          :key="link.path"
+          :to="link.path"
+          class="nav-link"
+          :class="{
+            active:
+              route.path === link.path ||
+              (link.path !== '/' && route.path.startsWith(link.path)),
+          }"
+          ><span>{{ link.label }}</span
+          ><small>{{ link.en }}</small></router-link
+        >
       </div>
-
-      <button class="hamburger" @click="toggleMenu" :class="{ active: menuOpen }" aria-label="切换菜单" :aria-expanded="menuOpen">
-        <span></span><span></span><span></span>
-      </button>
+      <div class="nav-actions">
+        <button
+          class="search-btn"
+          @click="emit('search')"
+          aria-label="搜索文章"
+        >
+          <AppIcon name="search" :size="16" /><kbd>⌘ K</kbd></button
+        ><ThemeToggle /><button
+          class="menu-toggle"
+          @click="menuOpen = !menuOpen"
+          :aria-expanded="menuOpen"
+          aria-controls="mobile-nav"
+          :aria-label="menuOpen ? '关闭菜单' : '打开菜单'"
+        >
+          <span :class="{ open: menuOpen }"></span
+          ><span :class="{ open: menuOpen }"></span>
+        </button>
+      </div>
     </div>
-
-    <div class="mobile-menu" v-if="menuOpen" role="menu">
-      <RouterLink
-        v-for="link in navLinks"
+    <div v-if="menuOpen" id="mobile-nav" class="mobile-menu">
+      <router-link
+        v-for="link in links"
         :key="link.path"
         :to="link.path"
-        class="mobile-link"
-        role="menuitem"
         @click="menuOpen = false"
-      >{{ link.label }}</RouterLink>
-      <button class="mobile-link mobile-search" @click="emit('search'); menuOpen = false">⌕ 搜索文章</button>
+        >{{ link.label }} <small>{{ link.en }}</small
+        ><AppIcon name="diagonal"
+      /></router-link>
     </div>
   </nav>
 </template>
-
 <style scoped>
 .navbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  inset: 0 0 auto;
   z-index: 100;
   height: var(--nav-height);
-  transition: background var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background 0.3s;
 }
-.navbar.scrolled {
-  background: color-mix(in srgb, var(--bg-page) 82%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom-color: var(--border);
+.navbar.scrolled,
+.navbar.expanded {
+  background: color-mix(in srgb, var(--bg-page) 88%, transparent);
+  backdrop-filter: blur(22px);
 }
 .navbar-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  gap: 24px;
 }
 .logo {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
+  gap: 10px;
   color: var(--ink);
-  text-decoration: none;
-  letter-spacing: -0.01em;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  white-space: nowrap;
 }
-.logo-mark {
+.logo-symbol {
+  font-size: 35px;
+  line-height: 1;
   color: var(--accent);
-  font-size: 15px;
 }
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 18px;
+.logo-dot {
+  color: var(--accent);
+}
+.logo-caption {
+  border-left: 1px solid var(--border);
+  padding-left: 15px;
+  margin-left: 8px;
+  font: 8px/1.6 var(--font-mono);
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
 }
 .nav-links {
   display: flex;
-  gap: 4px;
+  gap: 34px;
 }
 .nav-link {
-  padding: 7px 14px;
-  font-family: var(--font-sans);
-  color: var(--text-body);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-muted);
+  font-size: 12px;
+  position: relative;
 }
-.nav-link:hover {
-  color: var(--accent);
+.nav-link small {
+  font-size: 10px;
+  opacity: 0.6;
 }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  left: 50%;
+  bottom: -13px;
+  background: var(--accent);
+  scale: 0;
+  transition: scale 0.2s;
+}
+.nav-link:hover,
 .nav-link.active {
   color: var(--ink);
-  font-weight: 600;
 }
-.icon-btn {
-  width: 34px; height: 34px;
-  display: flex; align-items: center; justify-content: center;
+.nav-link.active::after {
+  scale: 1;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.search-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  padding: 10px;
+}
+.search-btn kbd {
+  font: 10px var(--font-mono);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  color: var(--text-body);
-  font-size: 16px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  padding: 2px 5px;
+  border-radius: 4px;
 }
-.icon-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.hamburger {
+.menu-toggle {
   display: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 50%;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
 }
-.hamburger span {
-  display: block;
-  width: 20px; height: 2px;
+.menu-toggle span {
+  width: 14px;
+  height: 1px;
   background: var(--ink);
-  border-radius: 2px;
-  transition: all var(--transition-fast);
+  transition: transform 0.2s;
 }
-.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger.active span:nth-child(2) { opacity: 0; }
-.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.menu-toggle span.open:first-child {
+  transform: translateY(3px) rotate(45deg);
+}
+.menu-toggle span.open:last-child {
+  transform: translateY(-3px) rotate(-45deg);
+}
 .mobile-menu {
-  display: none;
-  flex-direction: column;
-  padding: 10px 24px 18px;
   background: var(--bg-page);
+  padding: 10px 24px 24px;
   border-bottom: 1px solid var(--border);
 }
-.mobile-link {
-  padding: 13px 0;
-  color: var(--text-body);
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
+.mobile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 0;
   border-bottom: 1px solid var(--border-soft);
-  text-align: left;
-  background: none;
-  border-left: none; border-right: none; border-top: none;
-  cursor: pointer;
-  font-family: var(--font-sans);
+  color: var(--ink);
 }
-@media (max-width: 768px) {
-  .nav-right { display: none; }
-  .hamburger { display: flex; }
-  .mobile-menu { display: flex; }
+.mobile-menu small {
+  color: var(--text-muted);
+}
+.mobile-menu svg {
+  margin-left: auto;
+}
+@media (max-width: 1000px) {
+  .logo-caption {
+    display: none;
+  }
+  .nav-links {
+    gap: 24px;
+  }
+}
+@media (max-width: 760px) {
+  .nav-links {
+    display: none;
+  }
+  .menu-toggle {
+    display: flex;
+  }
+  .search-btn kbd {
+    display: none;
+  }
+  .nav-actions {
+    gap: 8px;
+  }
+  .logo {
+    font-size: 24px;
+  }
 }
 </style>

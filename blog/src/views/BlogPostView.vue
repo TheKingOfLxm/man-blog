@@ -2,7 +2,13 @@
 import { ref, onMounted, onUnmounted, computed, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import MarkdownIt from 'markdown-it'
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import typescript from 'highlight.js/lib/languages/typescript'
+import css from 'highlight.js/lib/languages/css'
+import xml from 'highlight.js/lib/languages/xml'
+import json from 'highlight.js/lib/languages/json'
+import bash from 'highlight.js/lib/languages/bash'
 import postsData from '../data/posts.json'
 import { useSeo, type SeoOptions } from '../composables/useSeo'
 import Toc from '../components/Toc.vue'
@@ -13,20 +19,40 @@ const route = useRoute()
 const router = useRouter()
 const posts = postsData as Post[]
 
+// Load the languages used by this frontend journal instead of every grammar.
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('xml', xml)
+hljs.registerAliases(['vue', 'html'], { languageName: 'xml' })
+hljs.registerLanguage('json', json)
+hljs.registerLanguage('bash', bash)
+
 const post = ref<Post | undefined>(undefined)
 const renderedContent = ref('')
 const articleRef = ref<HTMLElement | null>(null)
 const loading = ref(true)
 const error = ref(false)
 
-interface TocItem { id: string; text: string; level: number }
+interface TocItem {
+  id: string
+  text: string
+  level: number
+}
 const tocItems = ref<TocItem[]>([])
 const activeHeading = ref('')
 let spyObserver: IntersectionObserver | null = null
+let articleRequest: AbortController | undefined
 
 // markdown-it v14 移除了 MarkdownIt.prototype.utils；自己实现 escapeHtml，避免依赖实例。
 function escapeHtml(s: string): string {
-  const map: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
   return s.replace(/[&<>"']/g, (c) => map[c])
 }
 
@@ -37,18 +63,28 @@ const md: MarkdownIt = new MarkdownIt({
   highlight(str: string, lang: string): string {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return '<pre class="hljs"><code>' +
+        return (
+          '<pre class="hljs"><code>' +
           hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
           '</code></pre>'
-      } catch { /* fallback */ }
+        )
+      } catch {
+        /* fallback */
+      }
     }
     return '<pre class="hljs"><code>' + escapeHtml(str) + '</code></pre>'
-  }
+  },
 })
 
-const currentIndex = computed(() => posts.findIndex(p => p.id === route.params.id))
-const prevPost = computed(() => currentIndex.value > 0 ? posts[currentIndex.value - 1] : null)
-const nextPost = computed(() => currentIndex.value < posts.length - 1 ? posts[currentIndex.value + 1] : null)
+const currentIndex = computed(() =>
+  posts.findIndex((p) => p.id === route.params.id),
+)
+const prevPost = computed(() =>
+  currentIndex.value > 0 ? posts[currentIndex.value - 1] : null,
+)
+const nextPost = computed(() =>
+  currentIndex.value < posts.length - 1 ? posts[currentIndex.value + 1] : null,
+)
 
 function seoOptions(): SeoOptions {
   if (post.value) {
@@ -63,8 +99,8 @@ function seoOptions(): SeoOptions {
         description: post.value.summary,
         datePublished: post.value.date,
         keywords: post.value.tags.join(', '),
-        author: { '@type': 'Person', name: '刘小满' }
-      }
+        author: { '@type': 'Person', name: '刘小满' },
+      },
     }
   }
   return { title: '文章 - 小满的技术随笔', description: '小满的技术随笔' }
@@ -84,7 +120,11 @@ function extractToc() {
   headings.forEach((h, i) => {
     const id = `heading-${i}`
     h.id = id
-    items.push({ id, text: (h as HTMLElement).textContent || '', level: parseInt(h.tagName[1]) })
+    items.push({
+      id,
+      text: (h as HTMLElement).textContent || '',
+      level: parseInt(h.tagName[1]),
+    })
   })
   tocItems.value = items
 }
@@ -97,19 +137,25 @@ function setupScrollSpy() {
         if (entry.isIntersecting) activeHeading.value = entry.target.id
       }
     },
-    { rootMargin: '-80px 0px -70% 0px' }
+    { rootMargin: '-80px 0px -70% 0px' },
   )
-  tocItems.value.forEach(item => {
+  tocItems.value.forEach((item) => {
     const el = document.getElementById(item.id)
     if (el) spyObserver!.observe(el)
   })
 }
 
 async function loadArticle() {
+  articleRequest?.abort()
+  const request = new AbortController()
+  articleRequest = request
   const id = route.params.id as string
-  post.value = posts.find(p => p.id === id)
+  post.value = posts.find((p) => p.id === id)
   loading.value = true
   error.value = false
+  renderedContent.value = ''
+  tocItems.value = []
+  activeHeading.value = ''
   clearSpy()
 
   if (!post.value) {
@@ -120,21 +166,28 @@ async function loadArticle() {
 
   refreshSeo()
   try {
-    const modules = import.meta.glob('../../public/posts/*.md', { eager: true, query: '?raw', import: 'default' })
-    const raw = modules[`../../public/posts/${post.value.id}.md`]
-    if (!raw) {
-      error.value = true
-    } else {
-      renderedContent.value = md.render(raw as string)
-    }
+    const response = await fetch(
+      `${import.meta.env.BASE_URL}${post.value.content}`,
+      { signal: request.signal },
+    )
+    if (
+      !response.ok ||
+      response.headers.get('content-type')?.includes('text/html')
+    )
+      throw new Error('Article unavailable')
+    const raw = await response.text()
+    if (request.signal.aborted) return
+    renderedContent.value = md.render(raw)
   } catch {
+    if (request.signal.aborted) return
     error.value = true
   } finally {
-    loading.value = false
+    if (!request.signal.aborted) loading.value = false
   }
 
   if (!error.value && post.value) {
     await nextTick()
+    if (request.signal.aborted) return
     extractToc()
     setupScrollSpy()
   }
@@ -142,7 +195,10 @@ async function loadArticle() {
 
 onMounted(loadArticle)
 watch(() => route.params.id, loadArticle)
-onUnmounted(clearSpy)
+onUnmounted(() => {
+  clearSpy()
+  articleRequest?.abort()
+})
 </script>
 
 <template>
@@ -153,13 +209,16 @@ onUnmounted(clearSpy)
     <!-- 加载骨架 -->
     <div v-if="loading && post" class="post-layout">
       <div class="post-content">
-        <div class="skeleton" style="width: 60px; height: 22px;"></div>
-        <div class="skeleton" style="width: 70%; height: 36px; margin-top: 14px;"></div>
+        <div class="skeleton" style="width: 60px; height: 22px"></div>
+        <div
+          class="skeleton"
+          style="width: 70%; height: 36px; margin-top: 14px"
+        ></div>
         <div class="skeleton-lines">
-          <div class="skeleton" style="width: 100%; height: 16px;"></div>
-          <div class="skeleton" style="width: 92%; height: 16px;"></div>
-          <div class="skeleton" style="width: 96%; height: 16px;"></div>
-          <div class="skeleton" style="width: 80%; height: 16px;"></div>
+          <div class="skeleton" style="width: 100%; height: 16px"></div>
+          <div class="skeleton" style="width: 92%; height: 16px"></div>
+          <div class="skeleton" style="width: 96%; height: 16px"></div>
+          <div class="skeleton" style="width: 80%; height: 16px"></div>
         </div>
       </div>
     </div>
@@ -185,29 +244,49 @@ onUnmounted(clearSpy)
             <span v-if="post.wordCount">{{ post.wordCount }} 字</span>
           </div>
           <div class="post-tags">
-            <router-link v-for="tag in post.tags" :key="tag" :to="{ path: '/blog', query: { tag } }" class="tag">#{{ tag }}</router-link>
+            <router-link
+              v-for="tag in post.tags"
+              :key="tag"
+              :to="{ path: '/blog', query: { tag } }"
+              class="tag"
+              >#{{ tag }}</router-link
+            >
           </div>
         </header>
         <div class="markdown-body" v-html="renderedContent"></div>
       </article>
 
-      <Toc v-if="tocItems.length" :items="tocItems" :active-id="activeHeading" />
+      <Toc
+        v-if="tocItems.length"
+        :items="tocItems"
+        :active-id="activeHeading"
+      />
     </div>
 
     <!-- 不存在 -->
     <div v-else class="state">
       <h2>文章未找到</h2>
-      <button class="btn btn-primary" @click="router.push('/blog')">返回文章</button>
+      <button class="btn btn-primary" @click="router.push('/blog')">
+        返回文章
+      </button>
     </div>
 
     <!-- 上下篇 -->
     <nav v-if="post && !loading && !error" class="post-nav">
-      <router-link v-if="prevPost" :to="`/blog/${prevPost.id}`" class="nav-link">
+      <router-link
+        v-if="prevPost"
+        :to="`/blog/${prevPost.id}`"
+        class="nav-link"
+      >
         <span class="nav-label">← 上一篇</span>
         <span class="nav-title">{{ prevPost.title }}</span>
       </router-link>
       <span v-else></span>
-      <router-link v-if="nextPost" :to="`/blog/${nextPost.id}`" class="nav-link right">
+      <router-link
+        v-if="nextPost"
+        :to="`/blog/${nextPost.id}`"
+        class="nav-link right"
+      >
         <span class="nav-label">下一篇 →</span>
         <span class="nav-title">{{ nextPost.title }}</span>
       </router-link>
@@ -230,7 +309,9 @@ onUnmounted(clearSpy)
   padding: 8px 0;
   margin-bottom: 20px;
 }
-.back-btn:hover { color: var(--accent-hover); }
+.back-btn:hover {
+  color: var(--accent-hover);
+}
 .post-layout {
   display: flex;
   gap: 40px;
@@ -258,16 +339,44 @@ onUnmounted(clearSpy)
   color: var(--text-muted);
   font-size: 13px;
 }
-.dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-faint); }
-.post-tags { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-.post-tags .tag { text-decoration: none; }
-.post-tags .tag:hover { color: var(--accent); border-color: var(--accent); }
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+.post-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.post-tags .tag {
+  text-decoration: none;
+}
+.post-tags .tag:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 
-.skeleton-lines { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+.skeleton-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 24px;
+}
 
-.state { text-align: center; padding: 80px 0; }
-.state h2 { margin-bottom: 12px; }
-.state p { color: var(--text-muted); margin-bottom: 24px; }
+.state {
+  text-align: center;
+  padding: 80px 0;
+}
+.state h2 {
+  margin-bottom: 12px;
+}
+.state p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
 
 .post-nav {
   display: flex;
@@ -286,9 +395,20 @@ onUnmounted(clearSpy)
   color: inherit;
   max-width: 48%;
 }
-.nav-link.right { text-align: right; margin-left: auto; }
-.nav-label { font-size: 12px; color: var(--accent); font-family: var(--font-sans); }
-.nav-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+.nav-link.right {
+  text-align: right;
+  margin-left: auto;
+}
+.nav-label {
+  font-size: 12px;
+  color: var(--accent);
+  font-family: var(--font-sans);
+}
+.nav-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
 
 /* Markdown 正文（drop cap + 暖色） */
 :deep(.markdown-body) {
@@ -301,9 +421,17 @@ onUnmounted(clearSpy)
   color: var(--ink);
   margin: 1.6em 0 0.7em;
 }
-:deep(.markdown-body h2) { font-size: 1.45em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
-:deep(.markdown-body h3) { font-size: 1.2em; }
-:deep(.markdown-body p) { margin: 1.1em 0; }
+:deep(.markdown-body h2) {
+  font-size: 1.45em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+:deep(.markdown-body h3) {
+  font-size: 1.2em;
+}
+:deep(.markdown-body p) {
+  margin: 1.1em 0;
+}
 :deep(.markdown-body > p:first-of-type::first-letter) {
   font-family: var(--font-display);
   font-size: 3.2em;
@@ -322,7 +450,9 @@ onUnmounted(clearSpy)
   margin: 1.2em 0;
   font-size: 14px;
 }
-:deep(.markdown-body code) { font-family: var(--font-mono); }
+:deep(.markdown-body code) {
+  font-family: var(--font-mono);
+}
 :deep(.markdown-body :not(pre) > code) {
   background: var(--accent-soft);
   color: var(--accent);
@@ -331,7 +461,10 @@ onUnmounted(clearSpy)
   font-size: 0.9em;
 }
 :deep(.markdown-body ul),
-:deep(.markdown-body ol) { padding-left: 1.5em; margin: 1.1em 0; }
+:deep(.markdown-body ol) {
+  padding-left: 1.5em;
+  margin: 1.1em 0;
+}
 :deep(.markdown-body blockquote) {
   border-left: 3px solid var(--accent);
   padding: 4px 0 4px 18px;
@@ -340,16 +473,36 @@ onUnmounted(clearSpy)
   font-style: italic;
   font-family: var(--font-serif-cn);
 }
-:deep(.markdown-body a) { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
-:deep(.markdown-body img) { border-radius: var(--radius-md); margin: 1.2em 0; }
-:deep(.markdown-body hr) { border: none; border-top: 1px solid var(--border); margin: 2em 0; }
+:deep(.markdown-body a) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+:deep(.markdown-body img) {
+  border-radius: var(--radius-md);
+  margin: 1.2em 0;
+}
+:deep(.markdown-body hr) {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
 
 @media (max-width: 1024px) {
-  .post-layout { flex-direction: column; }
+  .post-layout {
+    flex-direction: column;
+  }
 }
 @media (max-width: 640px) {
-  .post-content { max-width: 100%; }
-  .post-nav { flex-direction: column; }
-  .post-nav .nav-link.right { text-align: left; margin-left: 0; }
+  .post-content {
+    max-width: 100%;
+  }
+  .post-nav {
+    flex-direction: column;
+  }
+  .post-nav .nav-link.right {
+    text-align: left;
+    margin-left: 0;
+  }
 }
 </style>

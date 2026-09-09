@@ -2,7 +2,7 @@
   {
     "id": "personal-blog",
     "title": "个人博客网站",
-    "description": "你正在看的这个网站！基于 Vue 3 + Vite + TypeScript 搭建的毛玻璃风格个人博客，支持暗色模式和 Markdown 文章渲染。",
+    "description": "以代码为笔的个人创作空间。Vue 3 驱动内容，GSAP 编排动效，Three.js 赋予灵感形状，让技术记录也有独特的表达。",
     "image": "/images/projects/blog.jpg",
     "tags": ["Vue 3", "TypeScript", "Vite", "Pinia"],
     "demo": "https://thekingoflxm.github.io/blog",

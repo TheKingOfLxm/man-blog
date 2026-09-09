@@ -10,17 +10,23 @@ import type { Post } from '../types'
 
 const route = useRoute()
 const router = useRouter()
-const posts = postsData as Post[]
+const posts = [...(postsData as Post[])].sort((a, b) =>
+  b.date.localeCompare(a.date),
+)
 
-const categories = ['全部', ...Array.from(new Set(posts.map(p => p.category)))]
-const allTags = Array.from(new Set(posts.flatMap(p => p.tags))).sort()
+const categories = [
+  '全部',
+  ...Array.from(new Set(posts.map((p) => p.category))),
+]
+const allTags = Array.from(new Set(posts.flatMap((p) => p.tags))).sort()
 
 const selectedCategory = ref<string>((route.query.cat as string) || '全部')
 const selectedTag = ref<string>((route.query.tag as string) || '')
 
 const filtered = computed(() => {
   return posts.filter((p) => {
-    const catOk = selectedCategory.value === '全部' || p.category === selectedCategory.value
+    const catOk =
+      selectedCategory.value === '全部' || p.category === selectedCategory.value
     const tagOk = !selectedTag.value || p.tags.includes(selectedTag.value)
     return catOk && tagOk
   })
@@ -44,7 +50,7 @@ watch(
     // 仅在值真正变化时赋值，避免与上面的 watch 互相触发形成循环
     if (selectedCategory.value !== c) selectedCategory.value = c
     if (selectedTag.value !== t) selectedTag.value = t
-  }
+  },
 )
 
 // 互斥单维度：切换分类或标签时清空另一维度，避免交集筛选意外缩小甚至为空
@@ -61,12 +67,18 @@ const rootRef = ref<HTMLElement | null>(null)
 const { refresh } = useScrollReveal(rootRef)
 // flush:'post'：等 DOM 更新后再观察新渲染的卡片。若用默认的 pre，refresh 会跑在旧 DOM 上、
 // 抓不到新挂载的 .reveal，它们就停在 opacity:0——这正是「筛选后列表看起来变空」的真因（数据对，只是看不见）
-watch(filtered, () => { refresh() }, { flush: 'post' })
+watch(
+  filtered,
+  () => {
+    refresh()
+  },
+  { flush: 'post' },
+)
 
 useSeo({
   title: '文章 - 小满的技术随笔',
   description: '记录 Vue、CSS、工程化等前端实践里的思考与避坑。',
-  type: 'website'
+  type: 'website',
 })
 </script>
 
@@ -85,18 +97,32 @@ useSeo({
           :key="cat"
           class="cat-btn"
           :class="{ active: selectedCategory === cat }"
+          :aria-pressed="selectedCategory === cat"
           @click="selectCategory(cat)"
-        >{{ cat }}</button>
+        >
+          {{ cat }}
+        </button>
       </div>
-      <TagFilter :model-value="selectedTag" :tags="allTags" @update:model-value="selectTag" />
+      <TagFilter
+        :model-value="selectedTag"
+        :tags="allTags"
+        @update:model-value="selectTag"
+      />
     </div>
 
     <div class="posts-grid" v-if="filtered.length">
-      <PostCard v-for="post in filtered" :key="post.id" :post="post" />
+      <PostCard
+        v-for="(post, index) in filtered"
+        :key="post.id"
+        :post="post"
+        :index="index"
+      />
     </div>
     <div v-else class="empty reveal" role="status">
       <p>没有找到匹配的文章</p>
-      <button class="btn btn-outline btn-sm" @click="selectCategory('全部')">清除筛选</button>
+      <button class="btn btn-outline btn-sm" @click="selectCategory('全部')">
+        清除筛选
+      </button>
     </div>
   </div>
 </template>
@@ -114,7 +140,10 @@ useSeo({
   font-size: clamp(28px, 5vw, 40px);
   margin: 10px 0 6px;
 }
-.subtitle { color: var(--text-muted); font-size: 15px; }
+.subtitle {
+  color: var(--text-muted);
+  font-size: 15px;
+}
 .filters {
   display: flex;
   flex-direction: column;
@@ -123,7 +152,11 @@ useSeo({
   margin-bottom: 8px;
   border-bottom: 1px solid var(--rule);
 }
-.cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.cat-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
 .cat-btn {
   padding: 7px 16px;
   font-family: var(--font-sans);
@@ -135,7 +168,10 @@ useSeo({
   cursor: pointer;
   transition: all var(--transition-fast);
 }
-.cat-btn:hover { color: var(--accent); border-color: var(--accent); }
+.cat-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 .cat-btn.active {
   background: var(--ink);
   border-color: var(--ink);
@@ -157,6 +193,8 @@ useSeo({
   align-items: center;
 }
 @media (max-width: 640px) {
-  .posts-grid { grid-template-columns: 1fr; }
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

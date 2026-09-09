@@ -2,14 +2,19 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
-  const isDark = ref(false)
+  const isDark = ref(true)
 
   function init() {
-    const saved = localStorage.getItem('theme')
+    let saved: string | null = null
+    try {
+      saved = localStorage.getItem('theme')
+    } catch {
+      /* Storage may be disabled. */
+    }
     if (saved) {
       isDark.value = saved === 'dark'
     } else {
-      isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
+      isDark.value = true
     }
     applyTheme()
   }
@@ -19,12 +24,19 @@ export const useThemeStore = defineStore('theme', () => {
   }
 
   function applyTheme() {
-    document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light')
+    document.documentElement.setAttribute(
+      'data-theme',
+      isDark.value ? 'dark' : 'light',
+    )
   }
 
   watch(isDark, () => {
     applyTheme()
-    localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+    try {
+      localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+    } catch {
+      /* Keep the in-memory preference. */
+    }
   })
 
   return { isDark, init, toggle }

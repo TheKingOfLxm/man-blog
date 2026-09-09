@@ -1,53 +1,95 @@
 <script setup lang="ts">
 import { useThemeStore } from '../stores/theme'
+import { nextTick } from 'vue'
+import { usePreferredReducedMotion } from '@vueuse/core'
 
 const theme = useThemeStore()
+const reduced = usePreferredReducedMotion()
 
 function toggleWithAnimation(e: MouseEvent) {
   const x = e.clientX
   const y = e.clientY
   const endRadius = Math.hypot(
     Math.max(x, window.innerWidth - x),
-    Math.max(y, window.innerHeight - y)
+    Math.max(y, window.innerHeight - y),
   )
 
   // 如果浏览器不支持 View Transition，直接切换
-  if (!document.startViewTransition) {
+  if (!document.startViewTransition || reduced.value === 'reduce') {
     theme.toggle()
     return
   }
 
-  const transition = document.startViewTransition(() => {
+  const transition = document.startViewTransition(async () => {
     theme.toggle()
+    await nextTick()
   })
 
-  transition.ready.then(() => {
-    const clipPath = [
-      `circle(0px at ${x}px ${y}px)`,
-      `circle(${endRadius}px at ${x}px ${y}px)`
-    ]
+  transition.ready
+    .then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ]
 
-    document.documentElement.animate(
-      { clipPath: theme.isDark ? clipPath.reverse() : clipPath },
-      {
-        duration: 500,
-        easing: 'ease-in-out',
-        pseudoElement: theme.isDark
-          ? '::view-transition-old(root)'
-          : '::view-transition-new(root)'
-      }
-    )
-  })
+      document.documentElement.animate(
+        { clipPath: theme.isDark ? clipPath.reverse() : clipPath },
+        {
+          duration: 500,
+          easing: 'ease-in-out',
+          pseudoElement: theme.isDark
+            ? '::view-transition-old(root)'
+            : '::view-transition-new(root)',
+        },
+      )
+    })
+    .catch(() => {
+      /* A superseded transition may be skipped. */
+    })
 }
 </script>
 
 <template>
-  <button class="theme-toggle" @click="toggleWithAnimation" :aria-label="theme.isDark ? '切换到亮色模式' : '切换到暗色模式'">
-    <svg v-if="!theme.isDark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  <button
+    class="theme-toggle"
+    @click="toggleWithAnimation"
+    :aria-label="theme.isDark ? '切换到亮色模式' : '切换到暗色模式'"
+  >
+    <svg
+      v-if="!theme.isDark"
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
-    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    <svg
+      v-else
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
     </svg>
   </button>
 </template>
@@ -85,7 +127,7 @@ function toggleWithAnimation(e: MouseEvent) {
   width: 34px;
   height: 34px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   background: var(--bg-surface);
   color: var(--accent);
   cursor: pointer;
@@ -93,7 +135,7 @@ function toggleWithAnimation(e: MouseEvent) {
 }
 .theme-toggle:hover {
   background: var(--accent);
-  color: #fffdf8;
+  color: var(--on-accent);
   border-color: var(--accent);
   transform: none;
 }

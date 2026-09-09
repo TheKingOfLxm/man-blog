@@ -8,7 +8,7 @@ function handleScroll() {
 }
 
 function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  window.scrollTo({ top: 0, behavior: 'auto' })
 }
 
 onMounted(() => window.addEventListener('scroll', handleScroll))
@@ -17,9 +17,24 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 
 <template>
   <Transition name="fade">
-    <button v-if="show" class="back-to-top" @click="scrollToTop" aria-label="回到顶部">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="18 15 12 9 6 15"/>
+    <button
+      v-if="show"
+      class="back-to-top"
+      @click="scrollToTop"
+      aria-label="回到顶部"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18 15 12 9 6 15" />
       </svg>
     </button>
   </Transition>
@@ -46,14 +61,16 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 }
 .back-to-top:hover {
   background: var(--accent);
-  color: #fffdf8;
+  color: var(--on-accent);
   border-color: var(--accent);
   transform: translateY(-3px);
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .fade-enter-from,
