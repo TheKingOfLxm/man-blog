@@ -15,6 +15,8 @@ const route = useRoute()
 const links = [
   { path: '/', label: '首页', en: 'Home' },
   { path: '/blog', label: '文章', en: 'Writing' },
+  { path: '/poems', label: '诗', en: 'Poems' },
+  { path: '/ci', label: '词', en: 'Ci' },
   { path: '/projects', label: '作品', en: 'Works' },
   { path: '/about', label: '关于', en: 'About' },
 ]
@@ -61,7 +63,7 @@ useEventListener('keydown', (e) => {
           class="search-btn"
           data-magnetic
           @click="emit('search')"
-          aria-label="搜索文章"
+          aria-label="搜索文章与诗词"
         >
           <AppIcon name="search" :size="16" /><kbd>⌘ K</kbd></button
         ><ThemeToggle /><button
@@ -137,7 +139,7 @@ useEventListener('keydown', (e) => {
 }
 .nav-links {
   display: flex;
-  gap: 34px;
+  gap: clamp(18px, 2.2vw, 30px);
 }
 .nav-link {
   display: flex;
@@ -217,6 +219,10 @@ useEventListener('keydown', (e) => {
 .mobile-menu {
   background: var(--bg-page);
   padding: 10px 24px 24px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  max-height: calc(100dvh - var(--nav-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-bottom: 1px solid var(--border);
 }
 .mobile-menu a {
@@ -238,7 +244,10 @@ useEventListener('keydown', (e) => {
     display: none;
   }
   .nav-links {
-    gap: 24px;
+    gap: 20px;
+  }
+  .nav-link small {
+    display: none;
   }
 }
 @media (max-width: 760px) {

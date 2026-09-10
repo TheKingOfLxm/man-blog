@@ -15,6 +15,7 @@ import site from '../data/site.json'
 import PostCard from '../components/PostCard.vue'
 import ProjectCard from '../components/ProjectCard.vue'
 import AppIcon from '../components/AppIcon.vue'
+import LiteraryShelf from '../components/LiteraryShelf.vue'
 import type { Post, Project } from '../types'
 const HeroScene = defineAsyncComponent(
   () => import('../components/HeroScene.vue'),
@@ -207,6 +208,7 @@ useSeo({
           />
         </div>
       </section>
+      <LiteraryShelf />
       <section class="contact-section reveal">
         <div>
           <span class="kicker">GOOD THINGS START WITH A CONVERSATION</span>

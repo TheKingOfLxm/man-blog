@@ -3,6 +3,11 @@ import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import postsData from '../data/posts.json'
 import { filterPosts } from '../composables/useSearch'
+import {
+  literaryCollections,
+  literaryPath,
+  searchLiterature,
+} from '../lib/literature'
 import type { Post } from '../types'
 import { useScrollLock } from '@vueuse/core'
 
@@ -17,7 +22,21 @@ const scrollLocked = useScrollLock(document.body)
 let previousFocus: HTMLElement | null = null
 const posts = postsData as Post[]
 
-const results = computed(() => filterPosts(posts, query.value).slice(0, 8))
+const results = computed(() =>
+  [
+    ...filterPosts(posts, query.value).map((post) => ({
+      ...post,
+      path: `/blog/${post.id}`,
+    })),
+    ...searchLiterature(query.value).map((work) => ({
+      id: work.id,
+      title: work.title,
+      category: literaryCollections[work.kind].title,
+      path: literaryPath(work),
+      readingTime: undefined,
+    })),
+  ].slice(0, 8),
+)
 
 watch(
   () => props.open,
@@ -36,9 +55,9 @@ watch(
 function close() {
   emit('update:open', false)
 }
-function go(id: string) {
+function go(path: string) {
   close()
-  router.push(`/blog/${id}`)
+  router.push(path)
 }
 function onKey(e: KeyboardEvent) {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -76,7 +95,7 @@ onUnmounted(() => {
         class="panel"
         role="dialog"
         aria-modal="true"
-        aria-label="搜索文章"
+        aria-label="搜索文章与诗词"
       >
         <div class="search-head">
           <span class="icon">⌕</span>
@@ -85,7 +104,7 @@ onUnmounted(() => {
             v-model="query"
             class="search-input"
             type="text"
-            placeholder="搜索文章标题、摘要或标签…"
+            placeholder="搜索文章、诗词标题或诗句…"
             aria-label="搜索"
           />
           <button class="close-search" aria-label="关闭搜索" @click="close">
@@ -93,9 +112,9 @@ onUnmounted(() => {
           </button>
         </div>
         <ul class="result-list">
-          <li v-if="results.length === 0" class="empty">没有匹配的文章</li>
-          <li v-for="r in results" :key="r.id">
-            <button class="result" @click="go(r.id)">
+          <li v-if="results.length === 0" class="empty">没有匹配的内容</li>
+          <li v-for="r in results" :key="r.path">
+            <button class="result" @click="go(r.path)">
               <span class="r-cat kicker">{{ r.category }}</span>
               <span class="r-title">{{ r.title }}</span>
               <span class="r-meta" v-if="r.readingTime"

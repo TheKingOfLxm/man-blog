@@ -30,6 +30,16 @@ export interface Epigraph {
   attribution: string
 }
 
+export type LiteraryKind = 'shi' | 'ci'
+
+export interface LiteraryWork {
+  id: string
+  kind: LiteraryKind
+  title: string
+  tune?: string
+  stanzas: string[]
+}
+
 export interface Site {
   name: string
   kicker: string
